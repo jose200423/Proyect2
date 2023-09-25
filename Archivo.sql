@@ -27,7 +27,7 @@ allname VARCHAR(100) NOT NULL,
 cc LONG NOT NULL,
 birthdate DATE NOT NULL,
 city VARCHAR(100) NOT NULL,
-graduation DATE NOT NULL,
+graduation YEAR NOT NULL,
 days INT NOT NULL,
 supportedsessions INT NOT NULL,
 salary INT NOT NULL
@@ -50,3 +50,5 @@ cc LONG NOT NULL,
 birthdate DATE NOT NULL,
 city VARCHAR(100) NOT NULL
 );
+
+INSERT INTO usuario VALUES (1, 'jose', 'jose2003', 'HOLA');
