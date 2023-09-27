@@ -15,15 +15,15 @@ public class ServicesDTO extends PersonDTO {
 		this.sessionsCleaned = sessionsCleaned;
 	}
 
+	public ServicesDTO(String name, long identificationNumber, Date birthday, String cityOfBorn) {
+		super(name, identificationNumber, birthday, cityOfBorn);
+	}
+
 	public ServicesDTO(String name, long identificationNumber, Date birthday, String cityOfBorn, int salary,
 			int sessionsCleaned) {
 		super(name, identificationNumber, birthday, cityOfBorn);
 		this.salary = salary;
 		this.sessionsCleaned = sessionsCleaned;
-	}
-
-	public ServicesDTO(String name, long identificationNumber, Date birthday, String cityOfBorn) {
-		super(name, identificationNumber, birthday, cityOfBorn);
 	}
 
 	public int getSalary() {

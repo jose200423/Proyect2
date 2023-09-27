@@ -7,64 +7,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 public class DBConnection {
 
-	private Connection connect = null;
+	private Connection conect = null;
 	private Statement statement = null;
-	private PreparedStatement preparedStatement = null;
-	private ResultSet resultset = null;
+	private PreparedStatement preparedstatement = null;
+	// Traer en una tabla
+	private ResultSet resulset = null;
+
 	private final String IP = "127.0.0.1";
 	private final String PORT = "3306";
 	private final String DATABASE = "anonimos";
 	private final String USERNAME = "root";
 	private final String PASSWORD = "famp";
-	
+
 	public DBConnection() {
-		
-	}
-
-	public void initConnection() {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			connect = DriverManager.getConnection("jdbc:mysql://" + IP + ":" + PORT + "/" + DATABASE, USERNAME,PASSWORD);
-		System.out.println("Conexion realizada con exito");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
 	}
 
-	public void close() {
-		try {
-
-			if (resultset != null) {
-				resultset.close();
-			}
-
-			if (statement != null) {
-				statement.close();
-			}
-
-			if (connect != null) {
-				connect.close();
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public Connection getConect() {
+		return conect;
 	}
 
-	public Connection getConnect() {
-		return connect;
-	}
-
-	public void setConnect(Connection connect) {
-		this.connect = connect;
+	public void setConect(Connection conect) {
+		this.conect = conect;
 	}
 
 	public Statement getStatement() {
@@ -75,20 +41,20 @@ public class DBConnection {
 		this.statement = statement;
 	}
 
-	public PreparedStatement getPreparedStatement() {
-		return preparedStatement;
+	public PreparedStatement getPreparedstatement() {
+		return preparedstatement;
 	}
 
-	public void setPreparedStatement(PreparedStatement preparedStatement) {
-		this.preparedStatement = preparedStatement;
+	public void setPreparedstatement(PreparedStatement preparedstatement) {
+		this.preparedstatement = preparedstatement;
 	}
 
-	public ResultSet getResultset() {
-		return resultset;
+	public ResultSet getResulset() {
+		return resulset;
 	}
 
-	public void setResultset(ResultSet resultset) {
-		this.resultset = resultset;
+	public void setResulset(ResultSet resulset) {
+		this.resulset = resulset;
 	}
 
 	public String getIP() {
@@ -110,7 +76,39 @@ public class DBConnection {
 	public String getPASSWORD() {
 		return PASSWORD;
 	}
-	
-	
+
+	// cargar libreria
+	public void initConnection() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			conect = DriverManager.getConnection("jdbc:mysql://" + IP + ":" + PORT + "/" + DATABASE, USERNAME,
+					PASSWORD);
+			System.out.println("Conexion realizada con exito!");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void close() {
+		try {
+			if (resulset != null) {
+				resulset.close();
+			}
+			if (statement != null) {
+				statement.close();
+			}
+			if (conect != null) {
+				conect.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 }
