@@ -30,7 +30,7 @@ allname VARCHAR(100) NOT NULL,
 cc BIGINT UNIQUE NOT NULL,
 birthdate DATE NOT NULL,
 city VARCHAR(100) NOT NULL,
-graduation YEAR NOT NULL,
+graduation DATE NOT NULL,
 days INT NOT NULL,
 supportedsessions INT NOT NULL,
 salary INT NOT NULL
