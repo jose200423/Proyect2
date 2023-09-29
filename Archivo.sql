@@ -54,3 +54,13 @@ birthdate DATE NOT NULL,
 city VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE administrador(
+id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+allname VARCHAR(100) NOT NULL,
+cc BIGINT UNIQUE NOT NULL,
+birthdate DATE NOT NULL,
+city VARCHAR(100) NOT NULL
+);
+SELECT * FROM administrador;
+INSERT INTO administrador (allname, cc, birthdate, city)
+VALUES ('joccse', 1235627892 , '2023-09-25', 'Ciudad de Nacimiento');
