@@ -45,7 +45,7 @@ public class AlcoholicDTO extends PersonDTO {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(super.toString());
-		sb.append("Person has been in: " + getSessionsPresent() + "sessions \n");
+		sb.append("Person has been in: " + getSessionsPresent() + " sessions \n");
 		sb.append("Nickname of this person is: " + getNickname() + "\n");
 		return sb.toString();
 	}

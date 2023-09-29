@@ -2,28 +2,28 @@ package co.edu.unbosque.model;
 
 import java.util.Date;
 
-public class ServiceDTO extends PersonDTO {
+public class ServicesDTO extends PersonDTO {
 	private int salary;
 	private int sessionsCleaned;
 
-	public ServiceDTO() {
+	public ServicesDTO() {
 	}
 
-	public ServiceDTO(int salary, int sessionsCleaned) {
+	public ServicesDTO(int salary, int sessionsCleaned) {
 		super();
 		this.salary = salary;
 		this.sessionsCleaned = sessionsCleaned;
 	}
 
-	public ServiceDTO(String name, long identificationNumber, Date birthday, String cityOfBorn, int salary,
+	public ServicesDTO(String name, long identificationNumber, Date birthday, String cityOfBorn) {
+		super(name, identificationNumber, birthday, cityOfBorn);
+	}
+
+	public ServicesDTO(String name, long identificationNumber, Date birthday, String cityOfBorn, int salary,
 			int sessionsCleaned) {
 		super(name, identificationNumber, birthday, cityOfBorn);
 		this.salary = salary;
 		this.sessionsCleaned = sessionsCleaned;
-	}
-
-	public ServiceDTO(String name, long identificationNumber, Date birthday, String cityOfBorn) {
-		super(name, identificationNumber, birthday, cityOfBorn);
 	}
 
 	public int getSalary() {

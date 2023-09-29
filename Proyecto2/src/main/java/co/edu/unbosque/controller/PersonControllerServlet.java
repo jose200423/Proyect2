@@ -2,10 +2,11 @@ package co.edu.unbosque.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
-import org.apache.catalina.connector.Response;
+import com.google.protobuf.TextFormat.ParseException;
 
-import co.edu.unbosque.model.AdminDTO;
 import co.edu.unbosque.model.PersonDTO;
 import co.edu.unbosque.model.persistence.AdminDAO;
 import co.edu.unbosque.model.persistence.PersonDAO;
@@ -16,14 +17,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class UserControllerServlet extends HttpServlet {
+public class PersonControllerServlet extends HttpServlet{
 
-	private static final long serialVersionUID = -4331680861219300600L;
+	
+	private static final long serialVersionUID = -1551947553685760812L;
 	private AdminDAO aDAO;
 	private PersonDAO pDao;
 	private View v;
 
-	public UserControllerServlet() {
+	public PersonControllerServlet() {
 		aDAO = new AdminDAO();
 		pDao = new PersonDAO();
 		v = new View();
@@ -42,26 +44,28 @@ public class UserControllerServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("text/html");
-		String name = req.getParameter("username");
-		String password = req.getParameter("password");
-		aDAO.read();
-		v.printJump(aDAO.readAll());
-		boolean status = aDAO.validate(name,password);
-		log(name);
-		log(password);
-		PrintWriter out = resp.getWriter();
-		if (status) {
-			//out.write("jajaj lo encontre :V");
-			RequestDispatcher rd = req.getRequestDispatcher("login-success.jsp");
-			
-			rd.forward(req, resp);
-		} else {
-			// out.write("Usuario o contraseña incorrecta");
-			RequestDispatcher rd = req.getRequestDispatcher("login-error.jsp");
-			rd.forward(req, resp);
-		}
-		out.close();
+		 resp.setContentType("text/html");
+		    String name = req.getParameter("name");
+		    long cc = Long.parseLong(req.getParameter("cc"));
+		    java.util.Date utilDate = null;
+			try {
+				utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("date"));
+			} catch (java.text.ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+		    String cityOfBorn = req.getParameter("city");
+		  
+		    
+		    
+			log(name);
+			log(String.valueOf(cc));
+			log(String.valueOf(sqlDate));
+			log(cityOfBorn);
+		    PrintWriter out = resp.getWriter();
+		   pDao.create(new PersonDTO(name, cc, sqlDate, cityOfBorn));
+		    out.close();
 	}
 
 	@Override
@@ -91,4 +95,5 @@ public class UserControllerServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		super.doTrace(arg0, arg1);
 	}
+
 }
