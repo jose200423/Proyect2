@@ -3,62 +3,79 @@ package co.edu.unbosque.model.persistence;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import co.edu.unbosque.controller.DBConnection;
+import co.edu.unbosque.model.AdminDTO;
 import co.edu.unbosque.model.AlcoholicDTO;
 import co.edu.unbosque.model.PersonDTO;
 import co.edu.unbosque.model.PsychologistDTO;
 import co.edu.unbosque.model.ServicesDTO;
 
-public class PsychologistDAO {
+public class PsychologistDAO implements CRUDoperation {
 
-	private ArrayList<ServicesDTO> serv;
-	private ArrayList<PsychologistDTO> pydao;
-	private ArrayList<AlcoholicDTO> ahdao;
+	private ArrayList<PsychologistDTO> listpys;
+	private AlcoholicDAO ahdao;
+	private ServicesDAO serv;
 	private DBConnection dbcon;
 
 	public PsychologistDAO() {
-		serv = new ArrayList<ServicesDTO>();
-		pydao = new ArrayList<PsychologistDTO>();
-		ahdao = new ArrayList<AlcoholicDTO>();
+		listpys = new ArrayList<PsychologistDTO>();
+		ahdao = new AlcoholicDAO();
+		serv = new ServicesDAO();
 		dbcon = new DBConnection();
 	}
 
-	public void createPsychologist(Object obj) {
+	@Override
+	public boolean create(Object obj) {
 		PsychologistDTO newUser = (PsychologistDTO) obj;
+		read();
+		for (PsychologistDTO pDTO : listpys) {
+			if (pDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
+				return false;
+			}
+		}
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
 					"INSERT INTO psychologist (allname, cc, birthdate, city, graduation, days, supportedsessions, salary) VALUES(?,?,?,?,?,?,?,?)"));
 			dbcon.getPreparedstatement().setString(1, newUser.getName());
 			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
-			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getbirthday());
+			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getBirthday());
 			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
-			dbcon.getPreparedstatement().setInt(5, newUser.getGraduationYear());
-			dbcon.getPreparedstatement().setInt(6, newUser.getDaysSinceGraduation());
+			dbcon.getPreparedstatement().setDate(5, (Date) newUser.getGraduationYear());
+			
+			
+			LocalDate graduationDate = ((Date) newUser.getGraduationYear()).toLocalDate();
+		    LocalDate currentDate = LocalDate.now();
+		    long diasDesdeGraduacion = ChronoUnit.DAYS.between(graduationDate, currentDate);
+		        
+		    dbcon.getPreparedstatement().setInt(6, (int) diasDesdeGraduacion);
 			dbcon.getPreparedstatement().setInt(7, newUser.getSupportedSessions());
 			dbcon.getPreparedstatement().setInt(8, newUser.getSalary());
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
-
-		pydao.add((PsychologistDTO) obj);
+		listpys.add(newUser);
+		return true;
 	}
 
-	public String readByCc(int cc) {
+	@Override
+	public String readByCc(long cc) {
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
 			dbcon.setResulset(dbcon.getStatement().executeQuery("SELECT * FROM psychologist WHERE cc = " + cc));
 			if (dbcon.getResulset().next()) {
 				String name = dbcon.getResulset().getString("allname");
-				int cedula = dbcon.getResulset().getInt("cc");
+				long cedula = dbcon.getResulset().getLong("cc");
 				Date nivel = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				int grade = dbcon.getResulset().getInt("graduation");
+				Date grade = dbcon.getResulset().getDate("graduation");
 				int days = dbcon.getResulset().getInt("days");
 				int sessions = dbcon.getResulset().getInt("supportedsessions");
 				int salary = dbcon.getResulset().getInt("salary");
@@ -73,17 +90,16 @@ public class PsychologistDAO {
 		return "NO INFO";
 	}
 
-	public int updateByCc(int cc, String... args) {
+	@Override
+	public int updateByCc(long cc, String... args) {
 		Date fecha = null;
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
 		try {
-
 			dbcon.initConnection();
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
 					"UPDATE psychologist SET  allname=?, cc=?, birthdate=?, city=?, graduation=?, days=?, supportedsessions=?, salary=? WHERE cc=?"));
 			dbcon.getPreparedstatement().setString(1, args[0]);
-			dbcon.getPreparedstatement().setInt(2, cc);
+			dbcon.getPreparedstatement().setLong(2, cc);
 			dbcon.getPreparedstatement().setDate(3, Date.valueOf(args[2]));
 			dbcon.getPreparedstatement().setString(4, args[3]);
 			dbcon.getPreparedstatement().setInt(5, Integer.valueOf(args[4]));
@@ -91,23 +107,23 @@ public class PsychologistDAO {
 			dbcon.getPreparedstatement().setInt(7, Integer.valueOf(args[6]));
 			dbcon.getPreparedstatement().setInt(8, Integer.valueOf(args[7]));
 
-			dbcon.getPreparedstatement().setInt(9, cc);
+			dbcon.getPreparedstatement().setLong(9, cc);
 
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < pydao.size(); i++) {
-			if (pydao.get(i).getIdentificationNumber() == cc) {
-				pydao.get(i).setName(args[0]);
-				pydao.get(i).setIdentificationNumber(cc);
-				pydao.get(i).setbirthday(Date.valueOf(args[2]));
-				pydao.get(i).setCityOfBorn(args[3]);
-				pydao.get(i).setGraduationYear(Integer.valueOf(args[4]));
-				pydao.get(i).setDaysSinceGraduation(Integer.valueOf(args[5]));
-				pydao.get(i).setSalary(Integer.valueOf(args[6]));
-				pydao.get(i).setSupportedSessions(Integer.valueOf(args[7]));
+		for (int i = 0; i < listpys.size(); i++) {
+			if (listpys.get(i).getIdentificationNumber() == cc) {
+				listpys.get(i).setName(args[0]);
+				listpys.get(i).setIdentificationNumber(cc);
+				listpys.get(i).setBirthday(Date.valueOf(args[2]));
+				listpys.get(i).setCityOfBorn(args[3]);
+				listpys.get(i).setGraduationYear(Date.valueOf(args[4]));
+				listpys.get(i).setDaysSinceGraduation(Integer.valueOf(args[5]));
+				listpys.get(i).setSalary(Integer.valueOf(args[6]));
+				listpys.get(i).setSupportedSessions(Integer.valueOf(args[7]));
 
 				return 0;
 			}
@@ -116,151 +132,181 @@ public class PsychologistDAO {
 		return 1;
 	}
 
-	public int deleteByCc(int cc) {
+	@Override
+	public int deleteByCc(long cc) {
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement("DELETE FROM psychologist WHERE cc=?"));
-			dbcon.getPreparedstatement().setInt(1, cc);
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().setLong(1, cc);
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < pydao.size(); i++) {
-			if (pydao.get(i).getIdentificationNumber() == cc) {
-				pydao.remove(i);
+		for (int i = 0; i < listpys.size(); i++) {
+			if (listpys.get(i).getIdentificationNumber() == cc) {
+				listpys.remove(i);
+				return 0;
 			}
-
 		}
 		return 1;
 	}
 
 	public String readAll() {
-		pydao.clear();
-		// solicitudes
+		listpys.clear();
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
 			dbcon.setResulset(dbcon.getStatement().executeQuery("SELECT * FROM psychologist"));
 			while (dbcon.getResulset().next()) {
 				String name = dbcon.getResulset().getString("allname");
-				int cedula = dbcon.getResulset().getInt("cc");
+				long cedula = dbcon.getResulset().getLong("cc");
 				Date fecha = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				int graduation = dbcon.getResulset().getInt("graduation");
+				Date graduation = dbcon.getResulset().getDate("graduation");
 				int days = dbcon.getResulset().getInt("days");
 				int salary = dbcon.getResulset().getInt("salary");
 				int sessions = dbcon.getResulset().getInt("supportedsessions");
-				pydao.add(new PsychologistDTO(name, cedula, fecha, city, graduation, days, salary, sessions));
+				listpys.add(new PsychologistDTO(name, cedula, fecha, city, graduation, days, salary, sessions));
 			}
 			dbcon.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		String temporal = "";
-		for (PsychologistDTO usuario : pydao) {
+		for (PsychologistDTO usuario : listpys) {
 			temporal += usuario.toString();
 		}
 		return temporal;
 	}
 
-	// -----------------------------------------------------------------------
-
-	public void createServices(Object obj) {
-		ServicesDTO newUser = (ServicesDTO) obj;
+	public void read() {
+		listpys.clear();
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
-			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
-					"INSERT INTO services (allname, cc, birthdate, city, salary, cleanup) VALUES(?,?,?,?,?,?)"));
-			dbcon.getPreparedstatement().setString(1, newUser.getName());
-			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
-			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getbirthday());
-			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
-			dbcon.getPreparedstatement().setInt(5, newUser.getSalary());
-			dbcon.getPreparedstatement().setInt(6, newUser.getSessionsCleaned());
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.setStatement(dbcon.getConect().createStatement());
+			dbcon.setResulset(dbcon.getStatement().executeQuery("SELECT * FROM psychologist"));
+			while (dbcon.getResulset().next()) {
+				String name = dbcon.getResulset().getString("allname");
+				long cedula = dbcon.getResulset().getLong("cc");
+				Date fecha = dbcon.getResulset().getDate("birthdate");
+				String city = dbcon.getResulset().getString("city");
+				Date graduation = dbcon.getResulset().getDate("graduation");
+				int days = dbcon.getResulset().getInt("days");
+				int salary = dbcon.getResulset().getInt("salary");
+				int sessions = dbcon.getResulset().getInt("supportedsessions");
+				listpys.add(new PsychologistDTO(name, cedula, fecha, city, graduation, days, salary, sessions));
+			}
+			dbcon.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
 
-		serv.add((ServicesDTO) obj);
+	public boolean validate(String name, String cc) {
+		int ccInt = Integer.parseInt(cc);
+		for (PsychologistDTO u : listpys) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+	public boolean createServices(Object obj) {
+		boolean is = serv.create(obj);
+		if (is) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean createAlcoholics(Object obj) {
+		boolean is = ahdao.create(obj);
+		if (is) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public String readAllServices() {
-		serv.clear();
-		// solicitudes
-		dbcon.initConnection();
-		try {
-			dbcon.setStatement(dbcon.getConect().createStatement());
-			dbcon.setResulset(dbcon.getStatement().executeQuery("SELECT * FROM services"));
-			while (dbcon.getResulset().next()) {
-				String name = dbcon.getResulset().getString("allname");
-				int cedula = dbcon.getResulset().getInt("cc");
-				Date fecha = dbcon.getResulset().getDate("birthdate");
-				String city = dbcon.getResulset().getString("city");
-				int salary = dbcon.getResulset().getInt("salary");
-				int sessions = dbcon.getResulset().getInt("cleanup");
-				serv.add(new ServicesDTO(name, cedula, fecha, city, salary, sessions));
-			}
-			dbcon.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		String temporal = "";
-		for (ServicesDTO usuario : serv) {
-			temporal += usuario.toString();
-		}
-		return temporal;
-	}
-
-	public void createParticipants(Object obj) {
-		AlcoholicDTO newUser = (AlcoholicDTO) obj;
-		dbcon.initConnection();
-		try {
-			// insercion y cambios
-			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
-					"INSERT INTO alcoholic (allname, cc, birthdate, city, sessions, nickname) VALUES(?,?,?,?,?,?)"));
-			dbcon.getPreparedstatement().setString(1, newUser.getName());
-			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
-			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getbirthday());
-			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
-			dbcon.getPreparedstatement().setInt(5, newUser.getSessionsPresent());
-			dbcon.getPreparedstatement().setString(6, newUser.getNickname());
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		ahdao.add((AlcoholicDTO) obj);
+		return serv.readAll();
 	}
 
 	public String readAllAlcoholics() {
-		ahdao.clear();
-		// solicitudes
-		dbcon.initConnection();
-		try {
-			dbcon.setStatement(dbcon.getConect().createStatement());
-			dbcon.setResulset(dbcon.getStatement().executeQuery("SELECT * FROM alcoholic"));
-			while (dbcon.getResulset().next()) {
-				String name = dbcon.getResulset().getString("allname");
-				int cedula = dbcon.getResulset().getInt("cc");
-				Date fecha = dbcon.getResulset().getDate("birthdate");
-				String city = dbcon.getResulset().getString("city");
-				int sessions = dbcon.getResulset().getInt("sessions");
-				String nickname = dbcon.getResulset().getString("nickname");
-				ahdao.add(new AlcoholicDTO(name, cedula, fecha, city, sessions, nickname));
-			}
-			dbcon.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		return ahdao.readAll();
+	}
+
+	public int deleteServices(long cc) {
+		int i = serv.deleteByCc(cc);
+		if (i == 0) {
+			return 0;
+		} else {
+			return 1;
 		}
-		String temporal = "";
-		for (AlcoholicDTO usuario : ahdao) {
-			temporal += usuario.toString();
+	}
+
+	public int deleteAlcoholics(long cc) {
+		int i = ahdao.deleteByCc(cc);
+		if (i == 0) {
+			return 0;
+		} else {
+			return 1;
 		}
-		return temporal;
+	}
+
+	public int updateByCcServices(long cc, String... args) {
+		int i = serv.updateByCc(cc, args);
+		if (i == 0) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
+	public int updateByCcAlcoholics(long cc, String... args) {
+		int i = ahdao.updateByCc(cc, args);
+		if (i == 0) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
+	public ArrayList<PsychologistDTO> getPydao() {
+		return listpys;
+	}
+
+	public void setPydao(ArrayList<PsychologistDTO> pydao) {
+		this.listpys = pydao;
+	}
+
+	public AlcoholicDAO getAhdao() {
+		return ahdao;
+	}
+
+	public void setAhdao(AlcoholicDAO ahdao) {
+		this.ahdao = ahdao;
+	}
+
+	public ServicesDAO getServ() {
+		return serv;
+	}
+
+	public void setServ(ServicesDAO serv) {
+		this.serv = serv;
+	}
+
+	public DBConnection getDbcon() {
+		return dbcon;
+	}
+
+	public void setDbcon(DBConnection dbcon) {
+		this.dbcon = dbcon;
 	}
 
 }

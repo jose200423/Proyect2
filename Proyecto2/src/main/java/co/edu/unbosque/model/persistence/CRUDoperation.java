@@ -2,14 +2,14 @@ package co.edu.unbosque.model.persistence;
 
 public interface CRUDoperation {
 
-	public void create(Object obj);
+	public boolean create(Object obj);
 
 	public String readAll();
 
-	public String readByCc(int cc);
+	public String readByCc(long cc);
 
-	public int updateByCc(int cc, String... args);
+	public int updateByCc(long cc, String... args);
 
-	public int deleteByCc(int cc);
+	public int deleteByCc(long cc);
 
 }

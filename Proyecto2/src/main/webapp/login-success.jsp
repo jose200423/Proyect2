@@ -16,47 +16,43 @@
 <title>Hola</title>
 </head>
 <body>
-	<form action="usercontrollerservlet" method="post">
+	<form action="personcontrollerservlet" method="post">
 		<div class="input-group mb-3">
 			<span class="input-group-text">@</span>
 			<div class="form-floating">
-				<input type="text" class="form-control" id="username"
-					name="username" placeholder="username"> <label
-					for="username">Username</label>
+				<input type="text" class="form-control" id="name"
+					name="name" placeholder="name"> <label
+					for="name">name</label>
 			</div>
 		</div>
 		<div class="input-group mb-3">
 			<span class="input-group-text">@</span>
 			<div class="form-floating">
-				<input type="password" class="form-control" id="password"
-					name="password" placeholder="password"> <label
-					for="password">Password</label>
+				<input type="text" class="form-control" id="cc"
+					name="cc" placeholder="cc"> <label
+					for="cc">cc</label>
+			</div>
+			<input type="date" value="2023-09-28" id="date" name="date"/>
+		</div>
+		<div class="input-group mb-3"> 
+			<span class="input-group-text">@</span>
+			<div class="form-floating">
+				<input type="text" class="form-control" id="city"
+					name="city" placeholder="city"> <label
+					for="city">city</label>
 			</div>
 		</div>
-		<input type="submit" value="login">
+		 <input type="submit" value="Submit">
 	</form>
+	
+	
 
 	<form action="usercontrollerservlet" method="get">
 
 		<input type="submit" value="Show All Users">
 	</form>
 
-	<form action="usercontrollerservlet" method="delete">
-		<div class="input-group mb-3">
-			<span class="input-group-text">@</span>
-			<div class="form-floating">
-				<input type="text" class="form-control" id="index" name="index"
-					placeholder="index"> <label for="index">index</label>
-			</div>
-		</div>
-
-	</form>
-	<form action="usercontrollerservlet" method="delete">
-
-		<input type="submit" value="Eliminar">
-	</form>
-
-	<input type="date" value="2017-06-01" />
+	
 
 </body>
 </html>

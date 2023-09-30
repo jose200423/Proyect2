@@ -9,4 +9,26 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
+  <servlet>
+		<description>servlet for login validation</description>
+		<display-name>UserControllerServlet</display-name>
+		<servlet-name>UserControllerServlet</servlet-name>
+		<servlet-class>co.edu.unbosque.controller.UserControllerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserControllerServlet</servlet-name>
+		<url-pattern>/usercontrollerservlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<description>servlet </description>
+		<display-name>PersonControllerServlet</display-name>
+		<servlet-name>PersonControllerServlet</servlet-name>
+		<servlet-class>co.edu.unbosque.controller.PersonControllerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PersonControllerServlet</servlet-name>
+		<url-pattern>/personcontrollerservlet</url-pattern>
+	</servlet-mapping>
+	
 </web-app>
