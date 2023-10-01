@@ -3,7 +3,7 @@ package co.edu.unbosque.model;
 import java.util.Date;
 
 public class PsychologistDTO extends PersonDTO {
-	private int graduationYear;
+	private Date graduationYear;
 	private int daysSinceGraduation;
 	private int supportedSessions;
 	private int salary;
@@ -15,8 +15,8 @@ public class PsychologistDTO extends PersonDTO {
 		super(name, identificationNumber, birthday, cityOfBorn);
 	}
 
-	public PsychologistDTO(String name, long identificationNumber, Date birthday, String cityOfBorn, int graduationYear,
-			int daysSinceGraduation, int supportedSessions, int salary) {
+	public PsychologistDTO(String name, long identificationNumber, Date birthday, String cityOfBorn,
+			Date graduationYear, int daysSinceGraduation, int supportedSessions, int salary) {
 		super(name, identificationNumber, birthday, cityOfBorn);
 		this.graduationYear = graduationYear;
 		this.daysSinceGraduation = daysSinceGraduation;
@@ -24,20 +24,12 @@ public class PsychologistDTO extends PersonDTO {
 		this.salary = salary;
 	}
 
-	public PsychologistDTO(int graduationYear, int daysSinceGraduation, int supportedSessions, int salary) {
+	public PsychologistDTO(Date graduationYear, int daysSinceGraduation, int supportedSessions, int salary) {
 		super();
 		this.graduationYear = graduationYear;
 		this.daysSinceGraduation = daysSinceGraduation;
 		this.supportedSessions = supportedSessions;
 		this.salary = salary;
-	}
-
-	public int getGraduationYear() {
-		return graduationYear;
-	}
-
-	public void setGraduationYear(int graduationYear) {
-		this.graduationYear = graduationYear;
 	}
 
 	public int getDaysSinceGraduation() {
@@ -62,6 +54,14 @@ public class PsychologistDTO extends PersonDTO {
 
 	public void setSalary(int salary) {
 		this.salary = salary;
+	}
+
+	public Date getGraduationYear() {
+		return graduationYear;
+	}
+
+	public void setGraduationYear(Date graduationYear) {
+		this.graduationYear = graduationYear;
 	}
 
 	@Override

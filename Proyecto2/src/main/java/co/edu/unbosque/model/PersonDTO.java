@@ -36,11 +36,11 @@ public class PersonDTO {
 		this.identificationNumber = identificationNumber;
 	}
 
-	public Date getbirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setbirthday(Date birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 
@@ -57,7 +57,7 @@ public class PersonDTO {
 		StringBuilder sb = new StringBuilder();
 		sb.append("The name of this person is: " + getName() + "\n");
 		sb.append("The identification number is: " + getIdentificationNumber() + "\n");
-		sb.append("The Birthday is: " + getbirthday() + "\n");
+		sb.append("The Birthday is: " + getBirthday() + "\n");
 		sb.append("It was borned on: " + getCityOfBorn() + "\n");
 		return sb.toString();
 	}

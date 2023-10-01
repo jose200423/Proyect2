@@ -2,7 +2,7 @@ package co.edu.unbosque.model.persistence;
 
 public interface CRUDoperation {
 
-	public void create(Object obj);
+	public boolean create(Object obj);
 
 	public String readAll();
 

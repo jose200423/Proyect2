@@ -20,39 +20,41 @@
 		<div class="input-group mb-3">
 			<span class="input-group-text">@</span>
 			<div class="form-floating">
-				<input type="text" class="form-control" id="name"
-					name="name" placeholder="name"> <label
-					for="name">name</label>
+				<input type="text" class="form-control" id="name" name="name"
+					placeholder="name"> <label for="name">name</label>
 			</div>
 		</div>
 		<div class="input-group mb-3">
 			<span class="input-group-text">@</span>
 			<div class="form-floating">
-				<input type="text" class="form-control" id="cc"
-					name="cc" placeholder="cc"> <label
-					for="cc">cc</label>
+				<input type="text" class="form-control" id="cc" name="cc"
+					placeholder="cc"> <label for="cc">cc</label>
 			</div>
-			<input type="date" value="2023-09-28" id="date" name="date"/>
+			<input type="date" value="2023-09-28" id="date" name="date" />
 		</div>
-		<div class="input-group mb-3"> 
+		<div class="input-group mb-3">
 			<span class="input-group-text">@</span>
 			<div class="form-floating">
-				<input type="text" class="form-control" id="city"
-					name="city" placeholder="city"> <label
-					for="city">city</label>
+				<input type="text" class="form-control" id="city" name="city"
+					placeholder="city"> <label for="city">city</label>
 			</div>
 		</div>
-		 <input type="submit" value="Submit">
+		<button type="submit" name="action" value="create">Crear</button>
+		<button type="submit" name="action" value="update">Actualizar</button>
+		<button type="submit" name="action" value="delete">Eliminar</button>
 	</form>
-	
-	
+
+
 
 	<form action="usercontrollerservlet" method="get">
 
 		<input type="submit" value="Show All Users">
 	</form>
 
-	
+
+
+
+
 
 </body>
 </html>
