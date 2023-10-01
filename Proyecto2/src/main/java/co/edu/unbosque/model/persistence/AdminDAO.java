@@ -14,75 +14,49 @@ import co.edu.unbosque.model.ServicesDTO;
 import co.edu.unbosque.model.AdminDTO;
 
 public class AdminDAO implements CRUDoperation {
-	private ArrayList<AdminDTO> users;
+	private ArrayList<AdminDTO> listadmins;
 	private PsychologistDAO pydao;
 	private AlcoholicDAO ahdao;
-	private ServicesDAO serdao;
+	private ServicesDAOTest serdao;
 	private DBConnection dbcon;
 
 	public AdminDAO() {
-		users = new ArrayList<AdminDTO>();
+		listadmins = new ArrayList<AdminDTO>();
 		pydao = new PsychologistDAO();
 		ahdao = new AlcoholicDAO();
-		serdao = new ServicesDAO();
+		serdao = new ServicesDAOTest();
 		dbcon = new DBConnection();
-	}
-
-	public void createPsychologist(Object obj) {
-		pydao.createParticipants(obj);
-	}
-
-	public void createServices(Object obj) {
-		serdao.createServices(obj);
-	}
-
-	public void createParticipants(Object obj) {
-		ahdao.create(obj);
-	}
-
-	public String listPsychologist() {
-		return pydao.readAll();
-	}
-
-	public String listServices() {
-		return serdao.readAllServices();
-	}
-
-	public String listParticipants() {
-		return ahdao.readAll();
 	}
 
 	@Override
 	public boolean create(Object obj) {
 		AdminDTO newUser = (AdminDTO) obj;
 		read();
-		for (AdminDTO adminDTO : users) {
+		for (AdminDTO adminDTO : listadmins) {
 			if (adminDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
 				return false;
 			}
 		}
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect()
 					.prepareStatement("INSERT INTO administrador (allname, cc, birthdate, city) VALUES(?,?,?,?)"));
 			dbcon.getPreparedstatement().setString(1, newUser.getName());
 			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
-			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getbirthday());
+			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getBirthday());
 			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		users.add((AdminDTO) obj);
+		listadmins.add((AdminDTO) obj);
 		return true;
 	}
 
 	@Override
 	public String readAll() {
-		users.clear();
-		// solicitudes
+		listadmins.clear();
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -92,14 +66,14 @@ public class AdminDAO implements CRUDoperation {
 				int cedula = dbcon.getResulset().getInt("cc");
 				Date fecha = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				users.add(new AdminDTO(name, cedula, fecha, city));
+				listadmins.add(new AdminDTO(name, cedula, fecha, city));
 			}
 			dbcon.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		String temporal = "";
-		for (AdminDTO usuario : users) {
+		for (AdminDTO usuario : listadmins) {
 			temporal += usuario.toString();
 		}
 		return temporal;
@@ -134,7 +108,6 @@ public class AdminDAO implements CRUDoperation {
 		try {
 
 			dbcon.initConnection();
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect()
 					.prepareStatement("UPDATE administrador SET  allname=?, cc=?, birthdate=?, city=? WHERE cc=?"));
 			dbcon.getPreparedstatement().setString(1, args[0]);
@@ -143,17 +116,17 @@ public class AdminDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().setString(4, args[3]);
 			dbcon.getPreparedstatement().setLong(5, cc);
 
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).getIdentificationNumber() == cc) {
-				users.get(i).setName(args[0]);
-				users.get(i).setIdentificationNumber(cc);
-				users.get(i).setbirthday(Date.valueOf(args[2]));
-				users.get(i).setCityOfBorn(args[3]);
+		for (int i = 0; i < listadmins.size(); i++) {
+			if (listadmins.get(i).getIdentificationNumber() == cc) {
+				listadmins.get(i).setName(args[0]);
+				listadmins.get(i).setIdentificationNumber(cc);
+				listadmins.get(i).setBirthday(Date.valueOf(args[2]));
+				listadmins.get(i).setCityOfBorn(args[3]);
 				return 0;
 			}
 
@@ -165,17 +138,17 @@ public class AdminDAO implements CRUDoperation {
 	public int deleteByCc(long id) {
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement("DELETE FROM administrador WHERE cc=?"));
 			dbcon.getPreparedstatement().setLong(1, id);
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < users.size(); i++) {
-			if (users.get(i).getIdentificationNumber() == id) {
-				users.remove(i);
+		for (int i = 0; i < listadmins.size(); i++) {
+			if (listadmins.get(i).getIdentificationNumber() == id) {
+				listadmins.remove(i);
+				return 0;
 			}
 
 		}
@@ -184,7 +157,7 @@ public class AdminDAO implements CRUDoperation {
 
 	public boolean validate(String name, String cc) {
 		int ccInt = Integer.parseInt(cc);
-		for (AdminDTO u : users) {
+		for (AdminDTO u : listadmins) {
 			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
 				return true;
 			}
@@ -193,8 +166,7 @@ public class AdminDAO implements CRUDoperation {
 	}
 
 	public void read() {
-		users.clear();
-		// solicitudes
+		listadmins.clear();
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -204,7 +176,7 @@ public class AdminDAO implements CRUDoperation {
 				int cedula = dbcon.getResulset().getInt("cc");
 				Date fecha = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				users.add(new AdminDTO(name, cedula, fecha, city));
+				listadmins.add(new AdminDTO(name, cedula, fecha, city));
 			}
 			dbcon.close();
 		} catch (SQLException e) {
@@ -212,13 +184,107 @@ public class AdminDAO implements CRUDoperation {
 		}
 
 	}
+	
+	public boolean createPsychologist(Object obj) {
+		boolean is = pydao.create(obj);
+		if(is) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	public boolean createServices(Object obj) {
+		boolean is = serdao.create(obj);
+		if(is) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean createAlcoholics(Object obj) {
+		boolean is = ahdao.create(obj);
+		if(is) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	public String listPsychologist() {
+		return pydao.readAll();
+	}
+
+	public String listServices() {
+		return serdao.readAll();
+	}
+
+	public String listAlcoholics() {
+		return ahdao.readAll();
+	}
+	
+	
+	public int deleteServices(long cc) {
+      int i = serdao.deleteByCc(cc);
+      if(i == 0) {
+    	  return 0;
+      }else{
+    	  return 1;
+      }
+	}
+
+	public int deleteePsychologist(long cc) {
+		 int i = pydao.deleteByCc(cc);
+	      if(i == 0) {
+	    	  return 0;
+	      }else{
+	    	  return 1;
+	      }
+	}
+
+	public int deletelistAlcoholics(long cc) {
+		 int i = ahdao.deleteByCc(cc);
+	      if(i == 0) {
+	    	  return 0;
+	      }else{
+	    	  return 1;
+	      }
+	}
+	
+	public int updateByCcServices(long cc, String... args) {
+		int i = serdao.updateByCc(cc,args);
+	      if(i == 0) {
+	    	  return 0;
+	      }else{
+	    	  return 1;
+	      }
+	}
+	
+	public int updateByCcPsychologist(long cc, String... args) {
+		int i = pydao.updateByCc(cc,args);
+	      if(i == 0) {
+	    	  return 0;
+	      }else{
+	    	  return 1;
+	      }
+	}
+	
+	public int updateByCcAlcoholics(long cc, String... args) {
+		int i = ahdao.updateByCc(cc,args);
+	      if(i == 0) {
+	    	  return 0;
+	      }else{
+	    	  return 1;
+	      }
+	}
 
 	public ArrayList<AdminDTO> getUsers() {
-		return users;
+		return listadmins;
 	}
 
 	public void setUsers(ArrayList<AdminDTO> users) {
-		this.users = users;
+		this.listadmins = users;
 	}
 
 	public PsychologistDAO getPydao() {
@@ -237,11 +303,11 @@ public class AdminDAO implements CRUDoperation {
 		this.ahdao = ahdao;
 	}
 
-	public ServicesDAO getSerdao() {
+	public ServicesDAOTest getSerdao() {
 		return serdao;
 	}
 
-	public void setSerdao(ServicesDAO serdao) {
+	public void setSerdao(ServicesDAOTest serdao) {
 		this.serdao = serdao;
 	}
 

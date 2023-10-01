@@ -12,7 +12,6 @@ public class DBConnection {
 	private Connection conect = null;
 	private Statement statement = null;
 	private PreparedStatement preparedstatement = null;
-	// Traer en una tabla
 	private ResultSet resulset = null;
 
 	private final String IP = "127.0.0.1";

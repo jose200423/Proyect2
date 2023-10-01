@@ -21,40 +21,34 @@ public class PersonDAO implements CRUDoperation {
 
 	@Override
 	public boolean create(Object obj) {
-		 read();
+		read();
 		PersonDTO newUser = (PersonDTO) obj;
-	    for (PersonDTO u : users) {
-	        // Compara el número de cédula del usuario existente con el del nuevo usuario
-	        if (u.getIdentificationNumber() == newUser.getIdentificationNumber()) {
-	            return false;
-	        }
-	    }
+		for (PersonDTO u : users) {
 
-	    dbcon.initConnection();
-	    try {
-	        // inserción y cambios
-	        dbcon.setPreparedstatement(dbcon.getConect()
-	                .prepareStatement("INSERT INTO person (allname, cc, birthdate, city) VALUES(?,?,?,?)"));
-	        dbcon.getPreparedstatement().setString(1, newUser.getName());
-	        dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
-	        dbcon.getPreparedstatement().setDate(3, (Date) newUser.getbirthday());
-	        dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
-	        dbcon.getPreparedstatement().executeUpdate(); // Realizar la inserción en MySQL
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
-
-	    // Agregar el nuevo usuario a la lista
-	    users.add(newUser);
-	    return true;
+			if (u.getIdentificationNumber() == newUser.getIdentificationNumber()) {
+				return false;
+			}
+		}
+		dbcon.initConnection();
+		try {
+			dbcon.setPreparedstatement(dbcon.getConect()
+					.prepareStatement("INSERT INTO person (allname, cc, birthdate, city) VALUES(?,?,?,?)"));
+			dbcon.getPreparedstatement().setString(1, newUser.getName());
+			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
+			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getBirthday());
+			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
+			dbcon.getPreparedstatement().executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		users.add(newUser);
+		return true;
 	}
-
-
+     
 	@Override
 	public String readAll() {
 		users.clear();
-		// solicitudes
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -104,9 +98,7 @@ public class PersonDAO implements CRUDoperation {
 		Date fecha = null;
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy//dd");
 		try {
-
 			dbcon.initConnection();
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect()
 					.prepareStatement("UPDATE person SET  allname=?, cc=?, birthdate=?, city=? WHERE cc=?"));
 			dbcon.getPreparedstatement().setString(1, args[0]);
@@ -114,8 +106,7 @@ public class PersonDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().setDate(3, Date.valueOf(args[1]));
 			dbcon.getPreparedstatement().setString(4, args[2]);
 			dbcon.getPreparedstatement().setLong(5, cc);
-
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -124,7 +115,7 @@ public class PersonDAO implements CRUDoperation {
 			if (users.get(i).getIdentificationNumber() == cc) {
 				users.get(i).setName(args[0]);
 				users.get(i).setIdentificationNumber(cc);
-				users.get(i).setbirthday(Date.valueOf(args[1]));
+				users.get(i).setBirthday(Date.valueOf(args[1]));
 				users.get(i).setCityOfBorn(args[2]);
 				return 0;
 			}
@@ -137,10 +128,9 @@ public class PersonDAO implements CRUDoperation {
 	public int deleteByCc(long id) {
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement("DELETE FROM person WHERE cc=?"));
 			dbcon.getPreparedstatement().setLong(1, id);
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -148,6 +138,7 @@ public class PersonDAO implements CRUDoperation {
 		for (int i = 0; i < users.size(); i++) {
 			if (users.get(i).getIdentificationNumber() == id) {
 				users.remove(i);
+				return 0;
 			}
 
 		}
@@ -156,7 +147,6 @@ public class PersonDAO implements CRUDoperation {
 
 	public void read() {
 		users.clear();
-		// solicitudes
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -173,6 +163,16 @@ public class PersonDAO implements CRUDoperation {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public boolean validate(String name, String cc) {
+		int ccInt = Integer.parseInt(cc);
+		for (PersonDTO u : users) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public ArrayList<PersonDTO> getUsers() {
