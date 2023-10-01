@@ -21,12 +21,12 @@ public class ServicesDAO implements CRUDoperation {
 		serv = new ArrayList<ServicesDTO>();
 		ahdao = new AlcoholicDAO();
 		dbcon = new DBConnection();
+		read();
 	}
 
 	@Override
 	public boolean create(Object obj) {
 		ServicesDTO newUser = (ServicesDTO) obj;
-		read();
 		for (ServicesDTO sDTO : serv) {
 			if (sDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
 				return false;
@@ -105,6 +105,7 @@ public class ServicesDAO implements CRUDoperation {
 
 	@Override
 	public int updateByCc(long cc, String... args) {
+		read();
 		Date fecha = null;
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
 		try {
@@ -122,6 +123,7 @@ public class ServicesDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < serv.size(); i++) {
@@ -148,6 +150,7 @@ public class ServicesDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < serv.size(); i++) {
@@ -182,10 +185,9 @@ public class ServicesDAO implements CRUDoperation {
 
 	}
 	
-	public boolean validate(String name, String cc) {
-		int ccInt = Integer.parseInt(cc);
+	public boolean validate(String name, long cc) {
 		for (ServicesDTO u : serv) {
-			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
 				return true;
 			}
 		}

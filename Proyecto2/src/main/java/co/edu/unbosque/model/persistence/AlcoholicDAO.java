@@ -18,12 +18,12 @@ public class AlcoholicDAO implements CRUDoperation {
 	public AlcoholicDAO() {
 		listahcos = new ArrayList<AlcoholicDTO>();
 		dbcon = new DBConnection();
+		read();
 	}
 
 	@Override
 	public boolean create(Object obj) {
 		AlcoholicDTO newUser = (AlcoholicDTO) obj;
-		read();
 		for (AlcoholicDTO aDTO : listahcos) {
 			if (aDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
 				return false;
@@ -85,6 +85,7 @@ public class AlcoholicDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < listahcos.size(); i++) {
@@ -139,6 +140,7 @@ public class AlcoholicDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 		for (int i = 0; i < listahcos.size(); i++) {
 			if (listahcos.get(i).getIdentificationNumber() == cc) {
@@ -176,10 +178,9 @@ public class AlcoholicDAO implements CRUDoperation {
 		}
 	}
 	
-	public boolean validate(String name, String cc) {
-		int ccInt = Integer.parseInt(cc);
+	public boolean validate(String name, long cc) {
 		for (AlcoholicDTO u : listahcos) {
-			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
 				return true;
 			}
 		}

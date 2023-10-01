@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import co.edu.unbosque.controller.DBConnection;
@@ -17,21 +19,21 @@ public class AdminDAO implements CRUDoperation {
 	private ArrayList<AdminDTO> listadmins;
 	private PsychologistDAO pydao;
 	private AlcoholicDAO ahdao;
-	private ServicesDAOTest serdao;
+	private ServicesDAO serdao;
 	private DBConnection dbcon;
 
 	public AdminDAO() {
 		listadmins = new ArrayList<AdminDTO>();
 		pydao = new PsychologistDAO();
 		ahdao = new AlcoholicDAO();
-		serdao = new ServicesDAOTest();
+		serdao = new ServicesDAO();
 		dbcon = new DBConnection();
+		read();
 	}
 
 	@Override
 	public boolean create(Object obj) {
 		AdminDTO newUser = (AdminDTO) obj;
-		read();
 		for (AdminDTO adminDTO : listadmins) {
 			if (adminDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
 				return false;
@@ -119,6 +121,7 @@ public class AdminDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < listadmins.size(); i++) {
@@ -143,6 +146,7 @@ public class AdminDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < listadmins.size(); i++) {
@@ -155,10 +159,9 @@ public class AdminDAO implements CRUDoperation {
 		return 1;
 	}
 
-	public boolean validate(String name, String cc) {
-		int ccInt = Integer.parseInt(cc);
+	public boolean validate(String name, long cc) {
 		for (AdminDTO u : listadmins) {
-			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
 				return true;
 			}
 		}
@@ -278,6 +281,16 @@ public class AdminDAO implements CRUDoperation {
 	    	  return 1;
 	      }
 	}
+	
+	public int calcularDias(Date fechaInicial) {
+		LocalDate fechaIniciallocal = fechaInicial.toLocalDate();
+		LocalDate fechafinal = LocalDate.now();
+		long diferencia = ChronoUnit.DAYS.between(fechaIniciallocal, fechafinal);
+		System.out.println(diferencia);
+		System.out.println((int) diferencia);
+		diferencia = diferencia / (24 * 60 * 60 * 1000);
+		return (int) diferencia;
+	}
 
 	public ArrayList<AdminDTO> getUsers() {
 		return listadmins;
@@ -303,11 +316,11 @@ public class AdminDAO implements CRUDoperation {
 		this.ahdao = ahdao;
 	}
 
-	public ServicesDAOTest getSerdao() {
+	public ServicesDAO getSerdao() {
 		return serdao;
 	}
 
-	public void setSerdao(ServicesDAOTest serdao) {
+	public void setSerdao(ServicesDAO serdao) {
 		this.serdao = serdao;
 	}
 

@@ -1,103 +1,61 @@
 package co.edu.unbosque.model.persistence;
+import static org.junit.Assert.*;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Date;
 
-import java.sql.Date;
-import java.util.ArrayList;
-
+import org.junit.Before;
 import org.junit.Test;
-
 import co.edu.unbosque.model.PsychologistDTO;
+import co.edu.unbosque.model.persistence.PsychologistDAO;
 
 public class PsychologistDAOTest {
 
-    
-    public void testCreate() {
-        PsychologistDAO psychologistDAO = new PsychologistDAO();
+    private PsychologistDAO psychologistDAO;
+    private PsychologistDTO marshallMathers;
 
-        
-        String name = "Marshall Mathers";
-        long identificationNumber = 987654321L;
-        Date birthday = new Date(System.currentTimeMillis()); // 
-        String cityOfBorn = "Detroit";
-        int graduationYear = 2000;
-        int daysSinceGraduation = 5000;
-        int supportedSessions = 300;
-        int salary = 7000;
+   
+    public void setUp() {
+        psychologistDAO = new PsychologistDAO();
 
-        PsychologistDTO psychologistDTO = new PsychologistDTO(name, identificationNumber, birthday, cityOfBorn, graduationYear, daysSinceGraduation, supportedSessions, salary);
-
-        boolean result = psychologistDAO.create(psychologistDTO);
-        assertEquals(true, result);
+       
+        marshallMathers = new PsychologistDTO();
+        marshallMathers.setName("Marshall Mathers");
+        marshallMathers.setIdentificationNumber(1234567890L);
+        marshallMathers.setBirthday(new Date(72, 9, 17)); 
+        marshallMathers.setCityOfBorn("Detroit");
+        marshallMathers.setGraduationYear(new Date(100, 4, 1)); 
+        marshallMathers.setSupportedSessions(500);
+        marshallMathers.setSalary(100000);
     }
 
   
+    public void testCreate() {
+        assertTrue(psychologistDAO.create(marshallMathers));
+    }
+
+    
     public void testReadByCc() {
-        PsychologistDAO psychologistDAO = new PsychologistDAO();
-
-        
-        long identificationNumber = 987654321L;
-
-        String expectedOutput = "The name of this person is: Marshall Mathers\n" +
-                "The identification number is: 987654321\n" +
-                "The Birthday is: " + new Date(System.currentTimeMillis()) + "\n" +
-                "It was borned on: Detroit\n" +
-                "Graduation's year: 2000\n" +
-                "Days since graduation: 5000\n" +
-                "Number of sessions supported: 300\n" +
-                "Salary is : 7000\n";
-
-        String actualOutput = psychologistDAO.readByCc(identificationNumber);
-        assertEquals(expectedOutput, actualOutput);
+        String result = psychologistDAO.readByCc(marshallMathers.getIdentificationNumber());
+        assertNotNull(result);
+        assertTrue(result.contains("Marshall Mathers"));
     }
 
     
     public void testUpdateByCc() {
-        PsychologistDAO psychologistDAO = new PsychologistDAO();
-
-        
-        long identificationNumber = 987654321L;
-
-        String updatedName = "Eminem";
-        String updatedCity = "New York";
-        int updatedGraduationYear = 2001;
-        int updatedDaysSinceGraduation = 6000;
-        int updatedSupportedSessions = 400;
-        int updatedSalary = 8000;
-
-        int result = psychologistDAO.updateByCc(identificationNumber, updatedName, "2003-05-01", updatedCity, String.valueOf(updatedGraduationYear), String.valueOf(updatedDaysSinceGraduation), String.valueOf(updatedSupportedSessions), String.valueOf(updatedSalary));
-        assertEquals(0, result);
+        String newCity = "New York";
+        assertEquals(0, psychologistDAO.updateByCc(marshallMathers.getIdentificationNumber(), "Marshall Mathers", "1972/10/17", newCity,
+                "2000/05/01", "2000", "600", "200000"));
+        String result = psychologistDAO.readByCc(marshallMathers.getIdentificationNumber());
+        assertNotNull(result);
+        assertTrue(result.contains(newCity));
     }
 
    
     public void testDeleteByCc() {
-        PsychologistDAO psychologistDAO = new PsychologistDAO();
-
-    
-        long identificationNumber = 987654321L;
-
-        int result = psychologistDAO.deleteByCc(identificationNumber);
-        assertEquals(0, result);
-    }
-
- 
-    public void testReadAll() {
-        PsychologistDAO psychologistDAO = new PsychologistDAO();
-
-       
-        long identificationNumber = 987654321L;
-
-        String expectedOutput = "The name of this person is: Marshall Mathers\n" +
-                "The identification number is: 987654321\n" +
-                "The Birthday is: " + new Date(System.currentTimeMillis()) + "\n" +
-                "It was borned on: Detroit\n" +
-                "Graduation's year: 2000\n" +
-                "Days since graduation: 5000\n" +
-                "Number of sessions supported: 300\n" +
-                "Salary is : 7000\n";
-
-        String actualOutput = psychologistDAO.readAll();
-        assertEquals(expectedOutput, actualOutput);
+        assertEquals(0, psychologistDAO.deleteByCc(marshallMathers.getIdentificationNumber()));
+        String result = psychologistDAO.readByCc(marshallMathers.getIdentificationNumber());
+        assertEquals("NO INFO", result);
     }
 }
+
 

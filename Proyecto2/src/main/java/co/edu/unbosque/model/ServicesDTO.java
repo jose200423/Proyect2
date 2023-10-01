@@ -1,6 +1,5 @@
 package co.edu.unbosque.model;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ServicesDTO extends PersonDTO {
@@ -45,7 +44,6 @@ public class ServicesDTO extends PersonDTO {
 
 	@Override
 	public String toString() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		StringBuilder sb = new StringBuilder(super.toString());
 		sb.append("The salary is: " + getSalary() + "\n");
 		sb.append("Number of sessions cleaned: " + getSessionsCleaned() + "\n");

@@ -17,11 +17,11 @@ public class PersonDAO implements CRUDoperation {
 	public PersonDAO() {
 		users = new ArrayList<PersonDTO>();
 		dbcon = new DBConnection();
+		read();
 	}
 
 	@Override
 	public boolean create(Object obj) {
-		read();
 		PersonDTO newUser = (PersonDTO) obj;
 		for (PersonDTO u : users) {
 
@@ -107,8 +107,10 @@ public class PersonDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().setString(4, args[2]);
 			dbcon.getPreparedstatement().setLong(5, cc);
 			dbcon.getPreparedstatement().executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < users.size(); i++) {
@@ -133,6 +135,7 @@ public class PersonDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < users.size(); i++) {
@@ -165,10 +168,9 @@ public class PersonDAO implements CRUDoperation {
 
 	}
 	
-	public boolean validate(String name, String cc) {
-		int ccInt = Integer.parseInt(cc);
+	public boolean validate(String name, long cc) {
 		for (PersonDTO u : users) {
-			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
 				return true;
 			}
 		}

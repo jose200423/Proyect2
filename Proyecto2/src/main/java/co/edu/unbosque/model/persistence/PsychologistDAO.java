@@ -3,6 +3,8 @@ package co.edu.unbosque.model.persistence;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import co.edu.unbosque.controller.DBConnection;
@@ -24,12 +26,12 @@ public class PsychologistDAO implements CRUDoperation {
 		ahdao = new AlcoholicDAO();
 		serv = new ServicesDAO();
 		dbcon = new DBConnection();
+		read();
 	}
 
 	@Override
 	public boolean create(Object obj) {
 		PsychologistDTO newUser = (PsychologistDTO) obj;
-		read();
 		for (PsychologistDTO pDTO : listpys) {
 			if (pDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
 				return false;
@@ -43,8 +45,14 @@ public class PsychologistDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
 			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getBirthday());
 			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
-			dbcon.getPreparedstatement().setInt(5, newUser.getGraduationYear());
-			dbcon.getPreparedstatement().setInt(6, newUser.getDaysSinceGraduation());
+			dbcon.getPreparedstatement().setDate(5, (Date) newUser.getGraduationYear());
+			
+			
+			LocalDate graduationDate = ((Date) newUser.getGraduationYear()).toLocalDate();
+		    LocalDate currentDate = LocalDate.now();
+		    long diasDesdeGraduacion = ChronoUnit.DAYS.between(graduationDate, currentDate);
+		        
+		    dbcon.getPreparedstatement().setInt(6, (int) diasDesdeGraduacion);
 			dbcon.getPreparedstatement().setInt(7, newUser.getSupportedSessions());
 			dbcon.getPreparedstatement().setInt(8, newUser.getSalary());
 			dbcon.getPreparedstatement().executeUpdate();
@@ -67,7 +75,7 @@ public class PsychologistDAO implements CRUDoperation {
 				long cedula = dbcon.getResulset().getLong("cc");
 				Date nivel = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				int grade = dbcon.getResulset().getInt("graduation");
+				Date grade = dbcon.getResulset().getDate("graduation");
 				int days = dbcon.getResulset().getInt("days");
 				int sessions = dbcon.getResulset().getInt("supportedsessions");
 				int salary = dbcon.getResulset().getInt("salary");
@@ -104,6 +112,7 @@ public class PsychologistDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < listpys.size(); i++) {
@@ -112,7 +121,7 @@ public class PsychologistDAO implements CRUDoperation {
 				listpys.get(i).setIdentificationNumber(cc);
 				listpys.get(i).setBirthday(Date.valueOf(args[2]));
 				listpys.get(i).setCityOfBorn(args[3]);
-				listpys.get(i).setGraduationYear(Integer.valueOf(args[4]));
+				listpys.get(i).setGraduationYear(Date.valueOf(args[4]));
 				listpys.get(i).setDaysSinceGraduation(Integer.valueOf(args[5]));
 				listpys.get(i).setSalary(Integer.valueOf(args[6]));
 				listpys.get(i).setSupportedSessions(Integer.valueOf(args[7]));
@@ -133,6 +142,7 @@ public class PsychologistDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < listpys.size(); i++) {
@@ -155,7 +165,7 @@ public class PsychologistDAO implements CRUDoperation {
 				long cedula = dbcon.getResulset().getLong("cc");
 				Date fecha = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				int graduation = dbcon.getResulset().getInt("graduation");
+				Date graduation = dbcon.getResulset().getDate("graduation");
 				int days = dbcon.getResulset().getInt("days");
 				int salary = dbcon.getResulset().getInt("salary");
 				int sessions = dbcon.getResulset().getInt("supportedsessions");
@@ -171,7 +181,7 @@ public class PsychologistDAO implements CRUDoperation {
 		}
 		return temporal;
 	}
-	
+
 	public void read() {
 		listpys.clear();
 		dbcon.initConnection();
@@ -183,7 +193,7 @@ public class PsychologistDAO implements CRUDoperation {
 				long cedula = dbcon.getResulset().getLong("cc");
 				Date fecha = dbcon.getResulset().getDate("birthdate");
 				String city = dbcon.getResulset().getString("city");
-				int graduation = dbcon.getResulset().getInt("graduation");
+				Date graduation = dbcon.getResulset().getDate("graduation");
 				int days = dbcon.getResulset().getInt("days");
 				int salary = dbcon.getResulset().getInt("salary");
 				int sessions = dbcon.getResulset().getInt("supportedsessions");
@@ -195,10 +205,9 @@ public class PsychologistDAO implements CRUDoperation {
 		}
 	}
 	
-	public boolean validate(String name, String cc) {
-		int ccInt = Integer.parseInt(cc);
+	public boolean validate(String name, long cc) {
 		for (PsychologistDTO u : listpys) {
-			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
 				return true;
 			}
 		}

@@ -45,13 +45,14 @@ public class PersonControllerServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		 resp.setContentType("text/html");
-		    String name = req.getParameter("name");
+		 String action = req.getParameter("action");
+		 if ("create".equals(action)) {
+		 String name = req.getParameter("name");
 		    long cc = Long.parseLong(req.getParameter("cc"));
 		    java.util.Date utilDate = null;
 			try {
 				utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("date"));
 			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
@@ -70,11 +71,54 @@ public class PersonControllerServlet extends HttpServlet{
 				rd.forward(req, resp);
 		    }
 		    out.close();
+		 } else if ("update".equals(action)) {
+			 String name = req.getParameter("name");
+			    long cc = Long.parseLong(req.getParameter("cc"));
+			    java.util.Date utilDate = null;
+				try {
+					utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("date"));
+				} catch (java.text.ParseException e) {
+					e.printStackTrace();
+				}
+			    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+			    String cityOfBorn = req.getParameter("city");
+				log(name);
+				log(String.valueOf(cc));
+				log(String.valueOf(sqlDate));
+				log(cityOfBorn);
+			    PrintWriter out = resp.getWriter();
+			    String[] args = new String[]{ name ,String.valueOf(sqlDate), cityOfBorn};
+			    
+			    int i = pDao.updateByCc(cc, args);
+			    if(i == 0) {
+			    	RequestDispatcher rd = req.getRequestDispatcher("create.jsp");
+					rd.forward(req, resp);
+			    }else {
+			    	RequestDispatcher rd = req.getRequestDispatcher("login-error.jsp");
+					rd.forward(req, resp);
+			    }
+			    out.close();
+		    }else if ("delete".equals(action)) {
+		
+			    long cc = Long.parseLong(req.getParameter("cc"));
+				log(String.valueOf(cc));
+			    PrintWriter out = resp.getWriter();
+			    int i = pDao.deleteByCc(cc);
+			    if(i == 0) {
+			    	RequestDispatcher rd = req.getRequestDispatcher("create.jsp");
+					rd.forward(req, resp);
+			    }else {
+			    	RequestDispatcher rd = req.getRequestDispatcher("login-error.jsp");
+					rd.forward(req, resp);
+			    }
+			    out.close();
+		    }
 	}
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		resp.setContentType("text/html");
+	    
 	}
 
 	@Override

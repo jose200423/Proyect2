@@ -18,7 +18,7 @@ public class DBConnection {
 	private final String PORT = "3306";
 	private final String DATABASE = "anonimos";
 	private final String USERNAME = "root";
-	private final String PASSWORD = "3143281843m";
+	private final String PASSWORD = "Gokumia2004.";
 
 	public DBConnection() {
 
