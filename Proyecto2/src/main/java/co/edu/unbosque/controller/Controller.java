@@ -21,16 +21,18 @@ public class Controller {
 		adao = new AdminDAO();
 		pydao = new PsychologistDAO();
 		p.read();
+
 	}
 
 	public void run() {
-		Date cumple = Date.valueOf("2018-12-10");
-		Date graduation = Date.valueOf("2020-12-10");
-		int dias = adao.calcularDias(graduation);
-		int diass = 100;
-		adao.createPsychologist(new PsychologistDTO("ramon", 9222282, cumple, "cali", graduation, 0, 3, 2000000));
-
-		System.out.println(pydao.readAll());
+		// ex.checkString(revisar);
+//		Date cumple = Date.valueOf("2018-12-10");
+//		Date graduation = Date.valueOf("2020-12-10");
+//		int dias = adao.calcularDias(graduation);
+//		int diass = 100;
+//		adao.createPsychologist(new PsychologistDTO("ramon", 9222282, cumple, "cali", graduation, 0, 3, 2000000));
+//
+//		System.out.println(pydao.readAll());
 
 //		while (true) {
 //			v.printJump(" ");
