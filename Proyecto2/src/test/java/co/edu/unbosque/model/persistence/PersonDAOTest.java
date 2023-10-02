@@ -15,7 +15,7 @@ public class PersonDAOTest {
     private PersonDAO personDAO;
     private PersonDTO marshallMathers;
 
- 
+    @Before
     public void setUp() {
         personDAO = new PersonDAO();
 
@@ -27,36 +27,36 @@ public class PersonDAOTest {
         marshallMathers.setCityOfBorn("Detroit");
     }
 
-   
+    @Test
     public void testCreate() {
         assertTrue(personDAO.create(marshallMathers));
     }
 
-   
+    @Test
     public void testReadAll() {
         String allPersons = personDAO.readAll();
         assertNotNull(allPersons);
         assertTrue(allPersons.contains("Marshall Mathers"));
     }
 
-   
+    @Test
     public void testReadByCc() {
         String result = personDAO.readByCc(marshallMathers.getIdentificationNumber());
         assertNotNull(result);
         assertTrue(result.contains("Marshall Mathers"));
     }
 
-   
+    @Test
     public void testUpdateByCc() {
        
         String newCity = "New York";
-        assertEquals(0, personDAO.updateByCc(marshallMathers.getIdentificationNumber(), "Marshall Mathers", "1972-10-17", newCity));
+        assertEquals(0, personDAO.updateByCc(marshallMathers.getIdentificationNumber(), "Marshall Mathers", "1234567890","1972-10-17", newCity));
         String result = personDAO.readByCc(marshallMathers.getIdentificationNumber());
         assertNotNull(result);
         assertTrue(result.contains(newCity));
     }
 
-  
+    @Test
     public void testDeleteByCc() {
         assertEquals(0, personDAO.deleteByCc(marshallMathers.getIdentificationNumber()));
         String result = personDAO.readByCc(marshallMathers.getIdentificationNumber());

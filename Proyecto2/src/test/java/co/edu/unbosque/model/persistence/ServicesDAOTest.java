@@ -2,7 +2,7 @@ package co.edu.unbosque.model.persistence;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
+import java.sql.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class ServicesDAOTest {
         marshallMathersServices = new ServicesDTO();
         marshallMathersServices.setName("Marshall Mathers");
         marshallMathersServices.setIdentificationNumber(1234567890L);
-        marshallMathersServices.setBirthday(new Date(72, 9, 17)); // Ajustar la fecha según sea necesario
+        marshallMathersServices.setBirthday(Date.valueOf("1972-10-17")); 
         marshallMathersServices.setCityOfBorn("Detroit");
         marshallMathersServices.setSalary(100000);
         marshallMathersServices.setSessionsCleaned(500);
@@ -43,7 +43,7 @@ public class ServicesDAOTest {
     @Test
     public void testUpdateByCc() {
         String newCity = "New York";
-        assertEquals(0, servicesDAO.updateByCc(marshallMathersServices.getIdentificationNumber(), "Marshall Mathers", "1972/10/17", newCity, "200000", "600"));
+        assertEquals(0, servicesDAO.updateByCc(marshallMathersServices.getIdentificationNumber(), "Marshall Mathers", "1234567890", "1972-10-17", newCity, "200000", "600"));
         String result = servicesDAO.readByCc(marshallMathersServices.getIdentificationNumber());
         assertNotNull(result);
         assertTrue(result.contains(newCity));
@@ -54,6 +54,13 @@ public class ServicesDAOTest {
         assertEquals(0, servicesDAO.deleteByCc(marshallMathersServices.getIdentificationNumber()));
         String result = servicesDAO.readByCc(marshallMathersServices.getIdentificationNumber());
         assertEquals("NO INFO", result);
+    }
+    
+    @Test
+    public void testReadAll() {
+        String allPersons = servicesDAO.readAll();
+        assertNotNull(allPersons);
+        assertTrue(allPersons.contains("Marshall Mathers"));
     }
 }
 

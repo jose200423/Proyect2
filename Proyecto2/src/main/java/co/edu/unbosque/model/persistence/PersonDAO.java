@@ -96,15 +96,15 @@ public class PersonDAO implements CRUDoperation {
 	@Override
 	public int updateByCc(long cc, String... args) {
 		Date fecha = null;
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy//dd");
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
 		try {
 			dbcon.initConnection();
 			dbcon.setPreparedstatement(dbcon.getConect()
 					.prepareStatement("UPDATE person SET  allname=?, cc=?, birthdate=?, city=? WHERE cc=?"));
 			dbcon.getPreparedstatement().setString(1, args[0]);
 			dbcon.getPreparedstatement().setLong(2, cc);
-			dbcon.getPreparedstatement().setDate(3, Date.valueOf(args[1]));
-			dbcon.getPreparedstatement().setString(4, args[2]);
+			dbcon.getPreparedstatement().setDate(3, Date.valueOf(args[2]));
+			dbcon.getPreparedstatement().setString(4, args[3]);
 			dbcon.getPreparedstatement().setLong(5, cc);
 			dbcon.getPreparedstatement().executeUpdate();
 			
@@ -117,8 +117,8 @@ public class PersonDAO implements CRUDoperation {
 			if (users.get(i).getIdentificationNumber() == cc) {
 				users.get(i).setName(args[0]);
 				users.get(i).setIdentificationNumber(cc);
-				users.get(i).setBirthday(Date.valueOf(args[1]));
-				users.get(i).setCityOfBorn(args[2]);
+				users.get(i).setBirthday(Date.valueOf(args[2]));
+				users.get(i).setCityOfBorn(args[3]);
 				return 0;
 			}
 

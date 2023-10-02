@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class AdminDTOTest {
 
-    
+	@Test
     public void testToString() throws ParseException {
         String name = "Marshall Mathers";
         long identificationNumber = 1234567890L;

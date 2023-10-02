@@ -102,7 +102,7 @@ public class PsychologistDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().setLong(2, cc);
 			dbcon.getPreparedstatement().setDate(3, Date.valueOf(args[2]));
 			dbcon.getPreparedstatement().setString(4, args[3]);
-			dbcon.getPreparedstatement().setInt(5, Integer.valueOf(args[4]));
+			dbcon.getPreparedstatement().setDate(5, Date.valueOf(args[4]));
 			dbcon.getPreparedstatement().setInt(6, Integer.valueOf(args[5]));
 			dbcon.getPreparedstatement().setInt(7, Integer.valueOf(args[6]));
 			dbcon.getPreparedstatement().setInt(8, Integer.valueOf(args[7]));

@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class AlcoholicDTOTest {
 
-    
+	@Test
     public void testToString() throws ParseException {
         String name = "Marshal Mathers";
         long identificationNumber = 987654321;
@@ -32,7 +32,7 @@ public class AlcoholicDTOTest {
         assertEquals(expectedToString, alcoholicDTO.toString());
     }
 
-   
+	@Test
     public void testGetterAndSetter() throws ParseException {
         String name = "Marshal Mathers";
         long identificationNumber = 987654321;

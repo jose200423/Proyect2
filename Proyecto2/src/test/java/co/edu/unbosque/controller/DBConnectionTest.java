@@ -24,18 +24,32 @@ public class DBConnectionTest {
     public void testInitConnection() throws SQLException {
         // Mock de la conexión
         Connection mockConnection = mock(Connection.class);
+        Statement mockStatement = mock(Statement.class);
 
-        // Simula la inicialización de la conexión
-        when(mockConnection.createStatement()).thenReturn(mock(Statement.class));
+        // Configura las respuestas simuladas
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
         when(mockConnection.isValid(1)).thenReturn(true);
 
+        // Valida la conexión
+        Connection validatedConnection = validateConnection(mockConnection);
+
         // Llama al método de inicialización
-        dbConnection.setConect(mockConnection);
+        dbConnection.setConect(validatedConnection);
         dbConnection.initConnection();
 
         // Verifica que la conexión sea la misma que la mockeada
-        assertEquals(mockConnection, dbConnection.getConect());
+        assertSame(validatedConnection, dbConnection.getConect());
     }
+
+    private Connection validateConnection(Connection connection) throws SQLException {
+        // Valida la conexión
+        if (!connection.isValid(1)) {
+            throw new SQLException("La conexión no es válida.");
+        }
+
+        return connection;
+    }
+
 
     @Test
     public void testClose() throws SQLException {

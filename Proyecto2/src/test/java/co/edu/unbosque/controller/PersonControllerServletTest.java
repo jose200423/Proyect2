@@ -30,18 +30,18 @@ public class PersonControllerServletTest {
     private PersonControllerServlet servlet;
     private PersonDAO personDAO;
 
-   
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         PersonDAO personDAO = mock(PersonDAO.class);
         
     }
 
-   
+    @Test
     public void testDoGet() throws Exception {
       
     }
-
+    @Test
     public void testDoPostCreate() throws Exception {
        
         when(request.getParameter("action")).thenReturn("create");
@@ -57,12 +57,11 @@ public class PersonControllerServletTest {
 
         
         servlet.doPost(request, response);
-
-       
+        
         verify(personDAO).create(any(PersonDTO.class));
     }
 
-   
+    @Test
     public void testDoPostUpdate() throws Exception {
       
         when(request.getParameter("action")).thenReturn("update");
@@ -83,7 +82,7 @@ public class PersonControllerServletTest {
         verify(personDAO).updateByCc(eq(123456789L), any(String[].class));
     }
 
-
+    @Test
     public void testDoPostDelete() throws Exception {
     
         when(request.getParameter("action")).thenReturn("delete");

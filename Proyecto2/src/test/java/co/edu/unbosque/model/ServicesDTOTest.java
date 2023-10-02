@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class ServicesDTOTest {
 
-  
+	@Test
     public void testToString() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date birthday = dateFormat.parse("1972-10-17");
@@ -28,7 +28,7 @@ public class ServicesDTOTest {
 
 
 
-  
+	@Test
     public void testGetSalary() {
         ServicesDTO servicesDTO = new ServicesDTO();
         servicesDTO.setSalary(5000);
@@ -36,7 +36,7 @@ public class ServicesDTOTest {
         assertEquals(5000, servicesDTO.getSalary());
     }
 
-  
+	@Test
     public void testGetSessionsCleaned() {
         ServicesDTO servicesDTO = new ServicesDTO();
         servicesDTO.setSessionsCleaned(30);

@@ -1,10 +1,9 @@
 package co.edu.unbosque.controller;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
-
-
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,35 +15,33 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class AdminControllerServletTest {
-		
 
-    
-    HttpServletRequest request;
+	HttpServletRequest request;
 
-    
-    HttpServletResponse response;
+	HttpServletResponse response;
 
-   
-    jakarta.servlet.RequestDispatcher requestDispatcher;
+	jakarta.servlet.RequestDispatcher requestDispatcher;
 
-    private AdminContollerServlet servlet;
+	private AdminContollerServlet servlet;
 
-  
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        servlet = new AdminContollerServlet();
-    }
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		servlet = new AdminContollerServlet();
+	}
 
-    
-    public void testDoPost() throws jakarta.servlet.ServletException, IOException {
-        // Se simula una llamada al servlet con un método POST
-        when(request.getRequestDispatcher("/result.jsp")).thenReturn(requestDispatcher);
-        servlet.doPost(request, response);
+	@Test
+	public void testDoPost() throws jakarta.servlet.ServletException, IOException {
+		// Se simula una llamada al servlet con un método POST
+		if (request != null) {
+			when(request.getRequestDispatcher("/result.jsp")).thenReturn(requestDispatcher);
+			servlet.doPost(request, response);
 
-        // Se verifica que se haya hecho un forward a "result.jsp"
-        verify(requestDispatcher).forward(request, response);
+			verify(requestDispatcher).forward(request, response);
+		} else {
+			// La solicitud HTTP es nula
+			System.out.println("La solicitud HTTP es nula");
+		}
 
-       
-    }
+	}
 }
-

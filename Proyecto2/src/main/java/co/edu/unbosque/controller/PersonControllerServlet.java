@@ -144,4 +144,36 @@ public class PersonControllerServlet extends HttpServlet{
 		super.doTrace(arg0, arg1);
 	}
 
+	public AdminDAO getaDAO() {
+		return aDAO;
+	}
+
+	public void setaDAO(AdminDAO aDAO) {
+		this.aDAO = aDAO;
+	}
+
+	public PersonDAO getpDao() {
+		return pDao;
+	}
+
+	public void setpDao(PersonDAO pDao) {
+		this.pDao = pDao;
+	}
+
+	public View getV() {
+		return v;
+	}
+
+	public void setV(View v) {
+		this.v = v;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
+
+	
+
 }
