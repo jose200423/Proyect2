@@ -7,42 +7,77 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import co.edu.unbosque.controller.DBConnection;
+import co.edu.unbosque.model.AdminDTO;
 import co.edu.unbosque.model.AlcoholicDTO;
 import co.edu.unbosque.model.PersonDTO;
 
-public class AlcoholicDAO {
-	private ArrayList<AlcoholicDTO> ahdao;
+/**
+ * Clase que implementa la interfaz CRUDoperation para operaciones relacionadas con alcohólicos.
+ * @author Andres Meneses
+ * @author Jose Munoz
+ * @author Fabian Montano
+ * @author Miguel pineda 
+ * @author Yishaq Riveros
+ */
+public class AlcoholicDAO implements CRUDoperation {
+	private ArrayList<AlcoholicDTO> listahcos;
 	private DBConnection dbcon;
+	/**
+	 * Constructor
+     * Inicializa la lista de alcohólicos y establece una conexión con la base de datos, luego llama a la función read() para cargar los datos.
+     *
+	 */
 
 	public AlcoholicDAO() {
-		ahdao = new ArrayList<AlcoholicDTO>();
+		listahcos = new ArrayList<AlcoholicDTO>();
 		dbcon = new DBConnection();
+		read();
 	}
+	 /**
+     * Crea un nuevo alcohólico en la base de datos y en la lista de alcohólicos en memoria.
+     *
+     * @param obj El objeto AlcoholicDTO que se desea crear.
+     * @return true si se crea correctamente, de lo contrario false.
+   
+     */
 
-	public void create(Object obj) {
+	@Override
+	public boolean create(Object obj) {
 		AlcoholicDTO newUser = (AlcoholicDTO) obj;
+		for (AlcoholicDTO aDTO : listahcos) {
+			if (aDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
+				return false;
+			}
+		}
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
 					"INSERT INTO alcoholic (allname, cc, birthdate, city, sessions, nickname) VALUES(?,?,?,?,?,?)"));
 			dbcon.getPreparedstatement().setString(1, newUser.getName());
 			dbcon.getPreparedstatement().setLong(2, newUser.getIdentificationNumber());
-			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getbirthday());
+			dbcon.getPreparedstatement().setDate(3, (Date) newUser.getBirthday());
 			dbcon.getPreparedstatement().setString(4, newUser.getCityOfBorn());
 			dbcon.getPreparedstatement().setInt(5, newUser.getSessionsPresent());
 			dbcon.getPreparedstatement().setString(6, newUser.getNickname());
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 
-		ahdao.add((AlcoholicDTO) obj);
+		listahcos.add(newUser);
+		return true;
 	}
+	/**
+     * Lee todos los alcohólicos desde la base de datos y los agrega a la lista en memoria.
+     *
+     * @return Una cadena con la representación de todos los alcohólicos.
 
+     */
+
+	@Override
 	public String readAll() {
-		ahdao.clear();
-		// solicitudes
+		listahcos.clear();
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -54,58 +89,56 @@ public class AlcoholicDAO {
 				String city = dbcon.getResulset().getString("city");
 				int sessions = dbcon.getResulset().getInt("sessions");
 				String nickname = dbcon.getResulset().getString("nickname");
-				ahdao.add(new AlcoholicDTO(name, cedula, fecha, city, sessions, nickname));
+				listahcos.add(new AlcoholicDTO(name, cedula, fecha, city, sessions, nickname));
 			}
 			dbcon.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		String temporal = "";
-		for (AlcoholicDTO usuario : ahdao) {
+		for (AlcoholicDTO usuario : listahcos) {
 			temporal += usuario.toString();
 		}
 		return temporal;
 	}
+	/**
+     * Elimina un alcohólico de la base de datos y de la lista de alcohólicos en memoria por su cédula.
+     *
+     * @param id La cédula del alcohólico que se desea eliminar.
+     * @return 0 si se elimina correctamente, de lo contrario 1.
+   
+     */
 
-	public int deleteByCc(int id) {
+	@Override
+	public int deleteByCc(long id) {
 		dbcon.initConnection();
 		try {
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement("DELETE FROM alcoholic WHERE cc=?"));
 			dbcon.getPreparedstatement().setLong(1, id);
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
-		for (int i = 0; i < ahdao.size(); i++) {
-			if (ahdao.get(i).getIdentificationNumber() == id) {
-				ahdao.remove(i);
+		for (int i = 0; i < listahcos.size(); i++) {
+			if (listahcos.get(i).getIdentificationNumber() == id) {
+				listahcos.remove(i);
+				return 0;
 			}
-
 		}
 		return 1;
 	}
+	 /**
+     * Lee un alcohólico desde la base de datos por su cédula y lo devuelve como una cadena.
+     *
+     * @param cc La cédula del alcohólico que se desea leer.
+     * @return Una cadena con la representación del alcohólico o "NO INFO" si no se encuentra.
+   
+     */
 
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	public String readByCc(int cc) {
+	@Override
+	public String readByCc(long cc) {
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -127,14 +160,22 @@ public class AlcoholicDAO {
 		dbcon.close();
 		return "NO INFO";
 	}
+	/**
+     * Actualiza los datos de un alcohólico en la base de datos y en la lista de alcohólicos en memoria por su cédula.
+     *
+     * @param cc   La cédula del alcohólico que se desea actualizar.
+     * @param args Arreglo de argumentos con los nuevos valores.
+     * @return 0 si se actualiza correctamente, de lo contrario 1.
+     
+     */
 
-	public int updateByCc(int cc, String... args) {
+	@Override
+	public int updateByCc(long cc, String... args) {
 		Date fecha = null;
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
 		try {
 
 			dbcon.initConnection();
-			// insercion y cambios
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
 					"UPDATE alcoholic SET  allname=?, cc=?, birthdate=?, city=?, sessions=?, nickname=? WHERE cc=?"));
 			dbcon.getPreparedstatement().setString(1, args[0]);
@@ -144,30 +185,32 @@ public class AlcoholicDAO {
 			dbcon.getPreparedstatement().setInt(5, Integer.parseInt(args[4]));
 			dbcon.getPreparedstatement().setString(6, args[5]);
 			dbcon.getPreparedstatement().setLong(7, cc);
-
-			dbcon.getPreparedstatement().executeUpdate();// vaya y ponga eso en el MySQL
+			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
-
-		for (int i = 0; i < ahdao.size(); i++) {
-			if (ahdao.get(i).getIdentificationNumber() == cc) {
-				ahdao.get(i).setName(args[0]);
-				ahdao.get(i).setIdentificationNumber(cc);
-				ahdao.get(i).setbirthday(Date.valueOf(args[2]));
-				ahdao.get(i).setCityOfBorn(args[3]);
-				ahdao.get(i).setSessionsPresent(Integer.parseInt(args[4]));
-				ahdao.get(i).setNickname(args[5]);
+		for (int i = 0; i < listahcos.size(); i++) {
+			if (listahcos.get(i).getIdentificationNumber() == cc) {
+				listahcos.get(i).setName(args[0]);
+				listahcos.get(i).setIdentificationNumber(cc);
+				listahcos.get(i).setBirthday(Date.valueOf(args[2]));
+				listahcos.get(i).setCityOfBorn(args[3]);
+				listahcos.get(i).setSessionsPresent(Integer.parseInt(args[4]));
+				listahcos.get(i).setNickname(args[5]);
 				return 0;
 			}
 
 		}
 		return 1;
 	}
+	/**
+     * Lee los alcohólicos desde la base de datos y los agrega a la lista en memoria.
+   
+     */
 
 	public void read() {
-		ahdao.clear();
-		// solicitudes
+		listahcos.clear();
 		dbcon.initConnection();
 		try {
 			dbcon.setStatement(dbcon.getConect().createStatement());
@@ -179,12 +222,49 @@ public class AlcoholicDAO {
 				String city = dbcon.getResulset().getString("city");
 				int sessions = dbcon.getResulset().getInt("sessions");
 				String nickname = dbcon.getResulset().getString("nickname");
-				ahdao.add(new AlcoholicDTO(name, cedula, fecha, city, sessions, nickname));
+				listahcos.add(new AlcoholicDTO(name, cedula, fecha, city, sessions, nickname));
 			}
 			dbcon.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	/**
+     * Valida si un alcohólico con el nombre y la cédula especificados existe en la lista.
+     *
+     * @param name El nombre del alcohólico a validar.
+     * @param cc   La cédula del alcohólico a validar.
+     * @return true si el alcohólico existe en la lista, de lo contrario false.
+   
+     */
+	
+	public boolean validate(String name, long cc) {
+		for (AlcoholicDTO u : listahcos) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * getters and setters
+	 * @return
+	 */
+
+	public ArrayList<AlcoholicDTO> getAhdao() {
+		return listahcos;
+	}
+
+	public void setAhdao(ArrayList<AlcoholicDTO> ahdao) {
+		this.listahcos = ahdao;
+	}
+
+	public DBConnection getDbcon() {
+		return dbcon;
+	}
+
+	public void setDbcon(DBConnection dbcon) {
+		this.dbcon = dbcon;
 	}
 
 }

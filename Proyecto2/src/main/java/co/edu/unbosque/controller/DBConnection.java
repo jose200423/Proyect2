@@ -6,19 +6,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 /**
- * Esta clase proporciona una conexión a una base de datos MySQL y métodos para
-   interactuar con ella.
+ * Clase para gestionar la conexión a una base de datos MySQL.
  * @author Andres Meneses
- * @author Jose Munoz
- * @author Fabian Montano
- * @author Miguel pineda 
  * @author Yishaq Riveros
+ * @author Fabian Montano
+ * @author Jose Munoz
+ * @author Miguel Pineda
  */
 public class DBConnection {
-   
-	/*Declaracion de variables miembro */
-	
 
 	private Connection conect = null;
 	private Statement statement = null;
@@ -30,13 +27,18 @@ public class DBConnection {
 	private final String DATABASE = "anonimos";
 	private final String USERNAME = "root";
 	private final String PASSWORD = "Gokumia2004.";
-    
-	/* Constructor de la clase*/
+	
+	/*
+     * Constructor de la clase.
+     */
+
 	public DBConnection() {
 
 	}
 	
-	/*Metodos getters y setters para aceeder a las variables miembro */
+	/*
+	 * Métodos getters y setters para los campos
+	 */
 
 	public Connection getConect() {
 		return conect;
@@ -89,15 +91,17 @@ public class DBConnection {
 	public String getPASSWORD() {
 		return PASSWORD;
 	}
-
-	/* cargar libreria */
+	
+	 /**
+     * Inicializa la conexión a la base de datos.
+     * Cargar librerias
+     */
 	public void initConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		/*establece la conexion utilizando los datos de configuracion */
 		try {
 			conect = DriverManager.getConnection("jdbc:mysql://" + IP + ":" + PORT + "/" + DATABASE, USERNAME,
 					PASSWORD);
@@ -107,8 +111,9 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 	}
-	
-	/*Cierra la conexion y otros recursos de la base de datos*/
+	/**
+     * Cierra la conexión y los recursos relacionados.
+     */
 
 	public void close() {
 		try {
