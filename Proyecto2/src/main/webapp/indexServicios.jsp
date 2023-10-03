@@ -33,7 +33,7 @@
 					<a href="indexNewAlcoholico.jsp">Nuevo Alcoholico</a>
 				</li>
 				<li>
-					<a href="#">Ver Alcoholicos</a>
+					<a href="indexVerAlcoholicos.jsp">Ver Alcoholicos</a>
 				</li>
 				<li>
 					<a href="index.jsp"><span class="fa fa-sign-out mr-3"></span> Sign Out</a>

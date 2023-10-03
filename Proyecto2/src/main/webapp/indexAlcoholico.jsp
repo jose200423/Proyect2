@@ -33,6 +33,9 @@
                     <a href="indexVerAlcoholico.jsp">Ver Miembro Alcoholics anonymous</a>
                 </li>
                 <li>
+                    <a href="indexModifAlcoholico.jsp">Modificar info Miembro</a>
+                </li>
+                <li>
                     <a href="index.jsp"><span class="fa fa-sign-out mr-3"></span> Sign Out</a>
                 </li>
             </ul>

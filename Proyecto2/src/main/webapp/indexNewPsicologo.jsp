@@ -58,8 +58,9 @@
 							<input type="number" name="salary" id="salary">
 						</div>
 						<div class="form-submit">
-							<input type="reset" value="Reset All" class="submit" name="reset" id="reset" />
-							<input type="submit" value="Submit Form" class="submit" name="submit" id="submit" />
+							<input type="button" onclick="#" name="Eliminar" class="submit" value="Eliminar">
+                            <input type="button" onclick="#" name="Modificar" class="submit" value="Modificar">
+                            <input type="submit" value="Submit Form" class="submit" name="submit" id="submit" />
 						</div>
 
 					</form>

@@ -2,12 +2,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Form new Servicios</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Form modify Alcholic</title>
+
     <!-- Font Icon -->
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+
     <!-- Main css -->
     <link rel="stylesheet" href="css/style2.css">
 </head>
@@ -16,38 +18,44 @@
         <div class="container">
             <div class="signup-content">
                 <div class="signup-img">
-                    <img src="images/aseo-2.jpg" alt="">
+                    <img src="images/alcohol2.jpg" alt="">
                 </div>
                 <div class="signup-form">
-                    <form method="post" action="servicescontrollerservlet.jsp">
-                        <h2>Registro Nuevo Servicio</h2>
+                    <form method="POST" action="AlcoholicControllerServlet.jsp" class="register-form" id="register-form">
+                        <h2>Registro Modificar Miembro A.A.</h2>
+
                         <div class="form-group">
                             <label for="name">Nombre Completo:</label>
                             <input type="text" name="name" id="name" required />
                         </div>
+
                         <div class="form-group">
-                            <label for="identificationNumber">Numero de identificacion:</label>
+                            <label for="identificationNumber">Numero de identificación:</label>
                             <input type="text" name="identificationNumber" id="identificationNumber" required />
                         </div>
+
                         <div class="form-group">
-                            <label for="birthday">Birthday:</label>
+                            <label for="birthday">Fecha de Nacimiento:</label>
                             <input type="date" name="birthday" id="birthday">
                         </div>
+
                         <div class="form-group">
                             <label for="cityOfBorn">Ciudad de Nacimiento:</label>
                             <input type="text" name="cityOfBorn" id="cityOfBorn">
                         </div>
+
                         <div class="form-group">
-                            <label for="salary">Salario:</label>
-                            <input type="number" name="salary" id="salary">
+                            <label for="sessionsPresent">Sesiones Participadas:</label>
+                            <input type="number" name="sessionsPresent" id="sessionsPresent">
                         </div>
+
                         <div class="form-group">
-                            <label for="sessionsCleaned">Sesiones Limpiadas:</label>
-                            <input type="number" name="sessionsCleaned" id="sessionsCleaned">
+                            <label for="nickname">Nickname:</label>
+                            <input type="text" name="nickname" id="nickname">
                         </div>
+
                         <div class="form-submit">
-                            <input type="button" onclick="#" name="Eliminar" class="submit" value="Eliminar">
-                            <input type="button" onclick="#" name="Modificar" class="submit" value="Modificar">
+                            <input type="reset" value="Reset All" class="submit" name="reset" id="reset" />
                             <input type="submit" value="Submit Form" class="submit" name="submit" id="submit" />
                         </div>
                     </form>
@@ -60,6 +68,7 @@
             </div>
         </div>
     </div>
+
     <!-- JS -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="js/main.js"></script>

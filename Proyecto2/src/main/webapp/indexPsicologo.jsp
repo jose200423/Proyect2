@@ -31,10 +31,10 @@
                     <a href="indexNewServicios.jsp">Nuevo Perosnal Servicios</a>
                 </li>
                 <li>
-                    <a href="#">Ver Alcoholicos</a>
+                    <a href="indexVerAlcoholicos.jsp">Ver Alcoholicos</a>
                 </li>
                 <li>
-                    <a href="#">Ver Personal Servicios</a>
+                    <a href="indexVerPersonal.jsp">Ver Personal Servicios</a>
                 </li>
                 <li>
                     <a href="index.jsp"><span class="fa fa-sign-out mr-3"></span> Sign Out</a>
