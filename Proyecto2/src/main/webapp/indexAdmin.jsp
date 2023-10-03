@@ -39,7 +39,7 @@
 					<a href="indexNewServicios.jsp">Nuevo Personal Servicios</a>
 				</li>
 				<li>
-					<a href="indexVerPsicologo.jsp">Ver Psicolgos</a>
+					<a href="indexVerPsicologo.jsp">Ver Psicologos</a>
 				</li>
 				<li>
 					<a href="indexVerAlcoholicos.jsp">Ver Alcoholicos</a>
