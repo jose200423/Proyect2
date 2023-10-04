@@ -12,21 +12,38 @@ import co.edu.unbosque.model.PersonDTO;
 import co.edu.unbosque.model.PsychologistDTO;
 import co.edu.unbosque.model.ServicesDTO;
 
+/**
+ * Esta clase implementa operaciones CRUD para objetos ServicesDTO.
+ * Interactúa con una base de datos para realizar operaciones de creación, lectura, actualización y eliminación.
+ * 
+ * @author Andres Meneses
+ * @author Jose Munoz
+ * @author Fabian Montano
+ * @author Miguel pineda 
+ * @author Yishaq Riveros
+ */
 public class ServicesDAO implements CRUDoperation {
 	private ArrayList<ServicesDTO> serv;
 	private AlcoholicDAO ahdao;
 	private DBConnection dbcon;
+	/**
+	 * constructor
+	 */
 
 	public ServicesDAO() {
 		serv = new ArrayList<ServicesDTO>();
 		ahdao = new AlcoholicDAO();
 		dbcon = new DBConnection();
+		read();
 	}
+	/**
+     * Crea un nuevo objeto ServicesDTO en la base de datos.
+     * @param obj El objeto ServicesDTO a crear.
+     */
 
 	@Override
 	public boolean create(Object obj) {
 		ServicesDTO newUser = (ServicesDTO) obj;
-		read();
 		for (ServicesDTO sDTO : serv) {
 			if (sDTO.getIdentificationNumber() == newUser.getIdentificationNumber()) {
 				return false;
@@ -51,6 +68,9 @@ public class ServicesDAO implements CRUDoperation {
 		serv.add(newUser);
 		return true;
 	}
+	/**
+     * Lee todos los objetos ServicesDTO de la base de datos.
+     */
 
 	@Override
 	public String readAll() {
@@ -78,6 +98,10 @@ public class ServicesDAO implements CRUDoperation {
 		}
 		return temporal;
 	}
+	/**
+     * Lee un objeto ServicesDTO por su número de identificación (cc).
+     * @param cc El número de identificación a buscar.
+     */
 
 	@Override
 	public String readByCc(long cc) {
@@ -102,23 +126,28 @@ public class ServicesDAO implements CRUDoperation {
 		dbcon.close();
 		return "NO INFO";
 	}
+	/**
+     * Actualiza un objeto ServicesDTO por su número de identificación (cc).
+     * @param cc El número de identificación a buscar.
+     * @param args Los nuevos valores para el objeto.
+     */
 
-	@Override
-	public int updateByCc(long cc, String... args) {
+	
+	
+	public int updateByCcAttrs(long cc, String name, long doc, Date bth, String city, int salary, int sessions) {
 		Date fecha = null;
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
 		try {
 
 			dbcon.initConnection();
 			dbcon.setPreparedstatement(dbcon.getConect().prepareStatement(
-					"UPDATE services SET  allname=?, cc=?, birthdate=?, city=?, salary=?, cleanup=? WHERE cc=?"));
-			dbcon.getPreparedstatement().setString(1, args[0]);
+					"UPDATE services SET  allname=?, cc=?, birthdate=?, city=?, salary=?, cleanup=? WHERE cc=" + cc));
+			dbcon.getPreparedstatement().setString(1, name);
 			dbcon.getPreparedstatement().setLong(2, cc);
-			dbcon.getPreparedstatement().setDate(3, Date.valueOf(args[2]));
-			dbcon.getPreparedstatement().setString(4, args[3]);
-			dbcon.getPreparedstatement().setInt(5, Integer.valueOf(args[4]));
-			dbcon.getPreparedstatement().setInt(6, Integer.valueOf(args[5]));
-			dbcon.getPreparedstatement().setLong(7, cc);
+			dbcon.getPreparedstatement().setDate(3, bth);
+			dbcon.getPreparedstatement().setString(4, city);
+			dbcon.getPreparedstatement().setInt(5, salary);
+			dbcon.getPreparedstatement().setInt(6, sessions);
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -126,18 +155,22 @@ public class ServicesDAO implements CRUDoperation {
 
 		for (int i = 0; i < serv.size(); i++) {
 			if (serv.get(i).getIdentificationNumber() == cc) {
-				serv.get(i).setName(args[0]);
+				serv.get(i).setName(name);
 				serv.get(i).setIdentificationNumber(cc);
-				serv.get(i).setBirthday(Date.valueOf(args[2]));
-				serv.get(i).setCityOfBorn(args[3]);
-				serv.get(i).setSalary(Integer.valueOf(args[4]));
-				serv.get(i).setSessionsCleaned(Integer.valueOf(args[5]));
+				serv.get(i).setBirthday(bth);
+				serv.get(i).setCityOfBorn(city);
+				serv.get(i).setSalary(salary);
+				serv.get(i).setSessionsCleaned(sessions);
 				return 0;
 			}
 
 		}
 		return 1;
 	}
+	/**
+     * Elimina un objeto ServicesDTO por su número de identificación (cc).
+     * @param cc El número de identificación a buscar.
+     */
 
 	@Override
 	public int deleteByCc(long cc) {
@@ -148,6 +181,7 @@ public class ServicesDAO implements CRUDoperation {
 			dbcon.getPreparedstatement().executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 		for (int i = 0; i < serv.size(); i++) {
@@ -159,6 +193,9 @@ public class ServicesDAO implements CRUDoperation {
 		}
 		return 1;
 	}
+	/**
+     * Lee los datos de la base de datos y actualiza la lista de servicios.
+     */
 
 	public void read() {
 		serv.clear();
@@ -181,18 +218,26 @@ public class ServicesDAO implements CRUDoperation {
 		}
 
 	}
+	/**
+     * Valida si un nombre y número de identificación (cc) ya existen en la lista de servicios.
+     * @param name El nombre a validar.
+     * @param cc El número de identificación a validar.
+     */
 	
-	public boolean validate(String name, String cc) {
-		int ccInt = Integer.parseInt(cc);
+	public boolean validate(String name, long cc) {
 		for (ServicesDTO u : serv) {
-			if (u.getName().equals(name) && u.getIdentificationNumber() == ccInt) {
+			if (u.getName().equals(name) && u.getIdentificationNumber() == cc) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public boolean createAlcoholics(Object obj) {
+	/**
+     * Crea objetos de tipo AlcoholicDAO en base a un objeto proporcionado.
+     * @param obj El objeto a crear en la lista de alcohólicos.
+     */
+
+ boolean createAlcoholics(Object obj) {
 		boolean is = ahdao.create(obj);
 		if (is) {
 			return true;
@@ -200,10 +245,17 @@ public class ServicesDAO implements CRUDoperation {
 			return false;
 		}
 	}
+ /**
+  * Lee todos los objetos de la lista de alcohólicos.
+  */
 
 	public String readAllAlcoholics() {
 		return ahdao.readAll();
 	}
+	/**
+     * Elimina un objeto de la lista de alcohólicos por su número de identificación (cc).
+     * @param cc El número de identificación a buscar.
+     */
 
 	public int deleteAlcoholics(long cc) {
 		  int i = ahdao.deleteByCc(cc);
@@ -213,6 +265,12 @@ public class ServicesDAO implements CRUDoperation {
 	    	  return 1;
 	      }
 	}
+	/**
+     * Actualiza un objeto de la lista de alcohólicos por su número de identificación (cc).
+     * @param cc El número de identificación a buscar.
+     * @param args Los nuevos valores para el objeto.
+     * @return 0 si la actualización fue exitosa, 1 en caso contrario.
+     */
 	
 	public int updateByCcAlcoholics(long cc, String... args) {
 		int i = ahdao.updateByCc(cc,args);
@@ -246,6 +304,11 @@ public class ServicesDAO implements CRUDoperation {
 
 	public void setDbcon(DBConnection dbcon) {
 		this.dbcon = dbcon;
+	}
+	
+	@Override
+	public int updateByCc(long cc, String... args) {
+		return 1;
 	}
 
 }

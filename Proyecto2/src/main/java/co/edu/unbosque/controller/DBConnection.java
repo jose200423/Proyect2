@@ -7,6 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Clase para gestionar la conexión a una base de datos MySQL.
+ * 
+ * @author Andres Meneses
+ * @author Yishaq Riveros
+ * @author Fabian Montano
+ * @author Jose Munoz
+ * @author Miguel Pineda
+ */
 public class DBConnection {
 
 	private Connection conect = null;
@@ -20,9 +29,17 @@ public class DBConnection {
 	private final String USERNAME = "root";
 	private final String PASSWORD = "famp";
 
+	/*
+	 * Constructor de la clase.
+	 */
+
 	public DBConnection() {
 
 	}
+
+	/*
+	 * Métodos getters y setters para los campos
+	 */
 
 	public Connection getConect() {
 		return conect;
@@ -76,7 +93,9 @@ public class DBConnection {
 		return PASSWORD;
 	}
 
-	// cargar libreria
+	/**
+	 * Inicializa la conexión a la base de datos. Cargar librerias
+	 */
 	public void initConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -92,6 +111,10 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Cierra la conexión y los recursos relacionados.
+	 */
 
 	public void close() {
 		try {
